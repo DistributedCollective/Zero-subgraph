@@ -1,0 +1,188 @@
+
+ã,Û,dataSources:
+  - kind: ethereum/contract
+    mapping:
+      abis:
+        - file:
+            /: /ipfs/QmVg8pP7p1MkMZDoCBGZCVfb5w6m6i1e77AVYhtFP9UBnm
+          name: TroveManager
+      apiVersion: 0.0.5
+      entities:
+        - Global
+        - User
+        - Transaction
+        - Trove
+        - TroveChange
+        - Redemption
+        - Liquidation
+        - SystemState
+      eventHandlers:
+        - event: 'TroveUpdated(indexed address,uint256,uint256,uint256,uint8)'
+          handler: handleTroveUpdated
+        - event: 'TroveLiquidated(indexed address,uint256,uint256,uint8)'
+          handler: handleTroveLiquidated
+        - event: 'Liquidation(uint256,uint256,uint256,uint256)'
+          handler: handleLiquidation
+        - event: 'Redemption(uint256,uint256,uint256,uint256)'
+          handler: handleRedemption
+        - event: 'LTermsUpdated(uint256,uint256)'
+          handler: handleLTermsUpdated
+      file:
+        /: /ipfs/QmbchBSFwZx1TTr5FDcrxWRMkWUP52236GyzBGom3yrXTs
+      kind: ethereum/events
+      language: wasm/assemblyscript
+    name: TroveManager
+    network: mainnet
+    source:
+      abi: TroveManager
+      address: '0x0464f1dc6C28D71C849c623610d33a45ce135B39'
+      startBlock: 2383375
+  - kind: ethereum/contract
+    mapping:
+      abis:
+        - file:
+            /: /ipfs/Qmf8Tg7QSYXY9nqSjk9kn38U3ViCZQujcSuVvecd3rQNuY
+          name: BorrowerOperations
+      apiVersion: 0.0.5
+      entities:
+        - Global
+        - User
+        - Transaction
+        - Trove
+        - TroveChange
+        - SystemState
+      eventHandlers:
+        - event: 'TroveUpdated(indexed address,uint256,uint256,uint256,uint8)'
+          handler: handleTroveUpdated
+        - event: 'ZUSDBorrowingFeePaid(indexed address,uint256)'
+          handler: handleLUSDBorrowingFeePaid
+      file:
+        /: /ipfs/QmQQ5GvKZjQFYVePewuWRPJvBzCiwLGnMWTjPGPN113bPW
+      kind: ethereum/events
+      language: wasm/assemblyscript
+    name: BorrowerOperations
+    network: mainnet
+    source:
+      abi: BorrowerOperations
+      address: '0x71F14023E3eEACdD028E49a6776E81BB04d60b98'
+      startBlock: 2383375
+  - kind: ethereum/contract
+    mapping:
+      abis:
+        - file:
+            /: /ipfs/QmU4Rp27SYRdjm7a6ted7NKr4kK578x4SxqiBZCPmERdc6
+          name: PriceFeed
+      apiVersion: 0.0.5
+      entities:
+        - Global
+        - Transaction
+        - PriceChange
+        - SystemState
+      eventHandlers:
+        - event: LastGoodPriceUpdated(uint256)
+          handler: handleLastGoodPriceUpdated
+      file:
+        /: /ipfs/QmQT1SvVGCSJ12bZDThPXt3FGyPFtf16TWcD1WfTKSSzSU
+      kind: ethereum/events
+      language: wasm/assemblyscript
+    name: PriceFeed
+    network: mainnet
+    source:
+      abi: PriceFeed
+      address: '0x46025a89d6F1BFfD1C0Ae9E98e39725e54A11e60'
+      startBlock: 2383375
+  - kind: ethereum/contract
+    mapping:
+      abis:
+        - file:
+            /: /ipfs/Qmaj9riqqrctwdxCWHWJignvUSJHyE2iJmy61UGNycgriR
+          name: StabilityPool
+      apiVersion: 0.0.5
+      entities:
+        - Global
+        - User
+        - Transaction
+        - StabilityDeposit
+        - StabilityDepositChange
+        - SystemState
+        - Frontend
+      eventHandlers:
+        - event: 'UserDepositChanged(indexed address,uint256)'
+          handler: handleUserDepositChanged
+        - event: 'RBTCGainWithdrawn(indexed address,uint256,uint256)'
+          handler: handleETHGainWithdrawn
+        - event: 'FrontEndRegistered(indexed address,uint256)'
+          handler: handleFrontendRegistered
+        - event: 'FrontEndTagSet(indexed address,indexed address)'
+          handler: handleFrontendTagSet
+      file:
+        /: /ipfs/Qmbd8dHbM8UffDQW8sYB86fVd6PHsgfM1ZSdPxhn3uJxQC
+      kind: ethereum/events
+      language: wasm/assemblyscript
+    name: StabilityPool
+    network: mainnet
+    source:
+      abi: StabilityPool
+      address: '0x0DcedF5e080ED1D58B27b030d042D60971408D26'
+      startBlock: 2383375
+  - kind: ethereum/contract
+    mapping:
+      abis:
+        - file:
+            /: /ipfs/QmRMz4G4FCptbYaJF92C2tMNHgQL3xc7nSzzrsadURVU9G
+          name: CollSurplusPool
+      apiVersion: 0.0.5
+      entities:
+        - Global
+        - User
+        - Transaction
+        - Trove
+        - CollSurplusChange
+        - SystemState
+      eventHandlers:
+        - event: 'CollBalanceUpdated(indexed address,uint256)'
+          handler: handleCollSurplusBalanceUpdated
+      file:
+        /: /ipfs/QmR4abWXCahUvweDAm7HjFXaqWCW4UTkUn3TYZMiUA9dYy
+      kind: ethereum/events
+      language: wasm/assemblyscript
+    name: CollSurplusPool
+    network: mainnet
+    source:
+      abi: CollSurplusPool
+      address: '0xAC0Bcbf50f27a60647109A229c4409E1369350C3'
+      startBlock: 2383375
+  - kind: ethereum/contract
+    mapping:
+      abis:
+        - file:
+            /: /ipfs/QmcDRhKmWMxdsokJq8skTVXq6poFzEBEjYxCYaywaKYhMq
+          name: ERC20
+      apiVersion: 0.0.5
+      entities:
+        - Global
+        - User
+        - Transaction
+        - Token
+      eventHandlers:
+        - event: 'Transfer(indexed address,indexed address,uint256)'
+          handler: handleTokenTransfer
+        - event: 'Approval(indexed address,indexed address,uint256)'
+          handler: handleTokenApproval
+      file:
+        /: /ipfs/QmZ8vzsnHqKMZYm8BQ7hP4EoyNcNdzZJKTA9imnUoP59Si
+      kind: ethereum/events
+      language: wasm/assemblyscript
+    name: ZUSDToken
+    network: mainnet
+    source:
+      abi: ERC20
+      address: '0x71A2D1f9611eA45181aee147A84673f355894D70'
+      startBlock: 2383375
+description: Sovryn official subgraph
+repository: 'https://github.com/DistributedCollective/Sovryn-subgraph'
+schema:
+  file:
+    /: /ipfs/QmU3w1sz7LMoxNWgSovN7ehZHdXU18RNgHjRMHexsxnVio
+specVersion: 0.0.2
+Û,
