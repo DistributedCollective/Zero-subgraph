@@ -2,7 +2,12 @@ import { ethereum, Address, BigInt } from "@graphprotocol/graph-ts";
 
 import { Trove, TroveChange } from "../../generated/schema";
 
-import { decimalize, BIGINT_SCALING_FACTOR, BIGINT_ZERO, DECIMAL_ZERO } from "../utils/bignumbers";
+import {
+  decimalize,
+  BIGINT_SCALING_FACTOR,
+  BIGINT_ZERO,
+  DECIMAL_ZERO,
+} from "../utils/bignumbers";
 import { calculateCollateralRatio } from "../utils/collateralRatio";
 
 import { isLiquidation, isRedemption } from "../types/TroveOperation";
@@ -16,7 +21,7 @@ import {
   increaseNumberOfOpenTroves,
   increaseNumberOfTrovesClosedByOwner,
   getLastChangeSequenceNumber,
-  getGlobal
+  getGlobal,
 } from "./Global";
 import { beginChange, initChange, finishChange } from "./Change";
 import { getCurrentPrice, updateSystemStateByTroveChange } from "./SystemState";
@@ -111,16 +116,26 @@ export function updateTrove(
 
   troveChange.collateralBefore = trove.collateral;
   troveChange.debtBefore = trove.debt;
-  troveChange.collateralRatioBefore = calculateCollateralRatio(trove.collateral, trove.debt, price);
+  troveChange.collateralRatioBefore = calculateCollateralRatio(
+    trove.collateral,
+    trove.debt,
+    price
+  );
 
   trove.collateral = newCollateral;
   trove.debt = newDebt;
 
   troveChange.collateralAfter = trove.collateral;
   troveChange.debtAfter = trove.debt;
-  troveChange.collateralRatioAfter = calculateCollateralRatio(trove.collateral, trove.debt, price);
+  troveChange.collateralRatioAfter = calculateCollateralRatio(
+    trove.collateral,
+    trove.debt,
+    price
+  );
 
-  troveChange.collateralChange = troveChange.collateralAfter.minus(troveChange.collateralBefore);
+  troveChange.collateralChange = troveChange.collateralAfter.minus(
+    troveChange.collateralBefore
+  );
   troveChange.debtChange = troveChange.debtAfter.minus(troveChange.debtBefore);
 
   if (isLiquidation(operation)) {
@@ -141,8 +156,10 @@ export function updateTrove(
   trove.rawStake = stake;
 
   if (stake != BIGINT_ZERO) {
-    trove.rawSnapshotOfTotalRedistributedCollateral = global.rawTotalRedistributedCollateral;
-    trove.rawSnapshotOfTotalRedistributedDebt = global.rawTotalRedistributedDebt;
+    trove.rawSnapshotOfTotalRedistributedCollateral =
+      global.rawTotalRedistributedCollateral;
+    trove.rawSnapshotOfTotalRedistributedDebt =
+      global.rawTotalRedistributedDebt;
 
     trove.collateralRatioSortKey = _debt
       .times(BIGINT_SCALING_FACTOR)
@@ -169,12 +186,12 @@ export function updateTrove(
   trove.save();
 }
 
-export function setBorrowingFeeOfLastTroveChange(_LUSDFee: BigInt): void {
+export function setBorrowingFeeOfLastTroveChange(_ZUSDFee: BigInt): void {
   let lastChangeSequenceNumber = getLastChangeSequenceNumber();
 
   let lastTroveChange = TroveChange.load(lastChangeSequenceNumber.toString());
   if (lastTroveChange !== null) {
-    lastTroveChange.borrowingFee = decimalize(_LUSDFee);
+    lastTroveChange.borrowingFee = decimalize(_ZUSDFee);
     lastTroveChange.save();
   }
 }

@@ -14,10 +14,7 @@ type Global @entity {
   numberOfTrovesClosedByOwner: Int!
   totalNumberOfTroves: Int!
 
-  totalNumberOfLQTYStakes: Int!
-  numberOfActiveLQTYStakes: Int!
-
-  "Total amount of LUSD paid as borrowing fees"
+  "Total amount of ZUSD paid as borrowing fees"
   totalBorrowingFeesPaid: BigDecimal!
   "Total amount of ETH paid as redemption fees"
   totalRedemptionFeesPaid: BigDecimal!
@@ -55,7 +52,6 @@ type SystemState @entity {
 
   tokensInStabilityPool: BigDecimal!
   collSurplusPoolBalance: BigDecimal!
-  totalLQTYTokensStaked: BigDecimal!
 
   cause: Change @derivedFrom(field: "systemStateAfter")
 }
@@ -66,8 +62,7 @@ type User @entity {
 
   trove: Trove
   stabilityDeposit: StabilityDeposit
-  stake: LqtyStake
-  frontend: Frontend
+  # frontend: Frontend
 
   collSurplus: BigDecimal!
   collSurplusChanges: [CollSurplusChange!]! @derivedFrom(field: "user")
@@ -266,39 +261,6 @@ type CollSurplusChange implements Change @entity {
   collSurplusBefore: BigDecimal!
   collSurplusChange: BigDecimal!
   collSurplusAfter: BigDecimal!
-}
-
-type LqtyStake @entity {
-  id: ID!
-  owner: User!
-  amount: BigDecimal!
-  changes: [LqtyStakeChange!]! @derivedFrom(field: "stake")
-}
-
-enum LQTYStakeOperation {
-  stakeCreated
-  stakeIncreased
-  stakeDecreased
-  stakeRemoved
-  gainsWithdrawn
-}
-
-type LqtyStakeChange implements Change @entity {
-  id: ID!
-  sequenceNumber: Int!
-  transaction: Transaction!
-  systemStateBefore: SystemState!
-  systemStateAfter: SystemState!
-
-  stake: LqtyStake!
-  stakeOperation: LQTYStakeOperation!
-
-  stakedAmountBefore: BigDecimal!
-  stakedAmountChange: BigDecimal!
-  stakedAmountAfter: BigDecimal!
-
-  issuanceGain: BigDecimal!
-  redemptionGain: BigDecimal!
 }
 
 type Token @entity {

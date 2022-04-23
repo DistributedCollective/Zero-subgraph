@@ -4,7 +4,7 @@ import {
   UserDepositChanged,
   RBTCGainWithdrawn,
   FrontEndRegistered,
-  FrontEndTagSet
+  FrontEndTagSet,
 } from "../../generated/StabilityPool/StabilityPool";
 
 import { BIGINT_ZERO } from "../utils/bignumbers";
@@ -13,9 +13,9 @@ import { getGlobal } from "../entities/Global";
 
 import {
   updateStabilityDeposit,
-  withdrawCollateralGainFromStabilityDeposit
+  withdrawCollateralGainFromStabilityDeposit,
 } from "../entities/StabilityDeposit";
-import { registerFrontend, assignFrontendToDepositor } from "../entities/Frontend";
+import { registerFrontend } from "../entities/Frontend";
 
 // Read the value of tmpDepositUpdate from the Global entity, and replace it with:
 //  - null, if it wasn't null
@@ -36,7 +36,11 @@ export function handleUserDepositChanged(event: UserDepositChanged): void {
   let ethGainWithdrawn = swapTmpDepositUpdate(event.params._newDeposit);
 
   if (ethGainWithdrawn !== null) {
-    updateStabilityDeposit(event, event.params._depositor, event.params._newDeposit);
+    updateStabilityDeposit(
+      event,
+      event.params._depositor,
+      event.params._newDeposit
+    );
   }
 }
 
@@ -53,7 +57,11 @@ export function handleETHGainWithdrawn(event: RBTCGainWithdrawn): void {
   );
 
   if (depositUpdate !== null) {
-    updateStabilityDeposit(event, event.params._depositor, depositUpdate as BigInt);
+    updateStabilityDeposit(
+      event,
+      event.params._depositor,
+      depositUpdate as BigInt
+    );
   }
 }
 
@@ -61,6 +69,6 @@ export function handleFrontendRegistered(event: FrontEndRegistered): void {
   registerFrontend(event.params._frontEnd, event.params._kickbackRate);
 }
 
-export function handleFrontendTagSet(event: FrontEndTagSet): void {
-  assignFrontendToDepositor(event.params._depositor, event.params._frontEnd);
-}
+// export function handleFrontendTagSet(event: FrontEndTagSet): void {
+//   assignFrontendToDepositor(event.params._depositor, event.params._frontEnd);
+// }

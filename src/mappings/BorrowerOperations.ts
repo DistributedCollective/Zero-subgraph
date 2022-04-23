@@ -1,11 +1,14 @@
 import {
   TroveUpdated,
-  ZUSDBorrowingFeePaid
+  ZUSDBorrowingFeePaid,
 } from "../../generated/BorrowerOperations/BorrowerOperations";
 
 import { getTroveOperationFromBorrowerOperation } from "../types/TroveOperation";
 
-import { setBorrowingFeeOfLastTroveChange, updateTrove } from "../entities/Trove";
+import {
+  setBorrowingFeeOfLastTroveChange,
+  updateTrove,
+} from "../entities/Trove";
 import { increaseTotalBorrowingFeesPaid } from "../entities/Global";
 
 export function handleTroveUpdated(event: TroveUpdated): void {
@@ -19,7 +22,7 @@ export function handleTroveUpdated(event: TroveUpdated): void {
   );
 }
 
-export function handleLUSDBorrowingFeePaid(event: ZUSDBorrowingFeePaid): void {
+export function handleZUSDBorrowingFeePaid(event: ZUSDBorrowingFeePaid): void {
   setBorrowingFeeOfLastTroveChange(event.params._ZUSDFee);
   increaseTotalBorrowingFeesPaid(event.params._ZUSDFee);
 }

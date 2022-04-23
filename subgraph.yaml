@@ -1,5 +1,5 @@
 specVersion: 0.0.2
-description: Sovryn official subgraph
+description: Zero subgraph
 repository: https://github.com/DistributedCollective/Sovryn-subgraph
 schema:
   file: ./schema.graphql
@@ -67,7 +67,7 @@ dataSources:
         - event: TroveUpdated(indexed address,uint256,uint256,uint256,uint8)
           handler: handleTroveUpdated
         - event: ZUSDBorrowingFeePaid(indexed address,uint256)
-          handler: handleLUSDBorrowingFeePaid
+          handler: handleZUSDBorrowingFeePaid
 
   - name: PriceFeed
     kind: ethereum/contract
@@ -112,7 +112,7 @@ dataSources:
         - StabilityDeposit
         - StabilityDepositChange
         - SystemState
-        - Frontend
+        # - Frontend
       abis:
         - name: StabilityPool
           file: ./abi/StabilityPool.json
@@ -121,10 +121,10 @@ dataSources:
           handler: handleUserDepositChanged
         - event: RBTCGainWithdrawn(indexed address,uint256,uint256)
           handler: handleETHGainWithdrawn
-        - event: FrontEndRegistered(indexed address,uint256)
-          handler: handleFrontendRegistered
-        - event: FrontEndTagSet(indexed address,indexed address)
-          handler: handleFrontendTagSet
+        # - event: FrontEndRegistered(indexed address,uint256)
+        #   handler: handleFrontendRegistered
+        # - event: FrontEndTagSet(indexed address,indexed address)
+        #   handler: handleFrontendTagSet
 
   - name: CollSurplusPool
     kind: ethereum/contract
@@ -151,33 +151,6 @@ dataSources:
       eventHandlers:
         - event: CollBalanceUpdated(indexed address,uint256)
           handler: handleCollSurplusBalanceUpdated
-
-  # - name: LQTYStaking
-  #   kind: ethereum/contract
-  #   network: mainnet
-  #   source:
-  #     abi: LQTYStaking
-  #     address: "${addresses.lqtyStaking}"
-  #     startBlock: ${startBlock}
-  #   mapping:
-  #     file: ./src/mappings/LqtyStake.ts
-  #     language: wasm/assemblyscript
-  #     kind: ethereum/events
-  #     apiVersion: 0.0.4
-  #     entities:
-  #       - Global
-  #       - User
-  #       - Transaction
-  #       - LqtyStake
-  #       - LqtyStakeChange
-  #     abis:
-  #       - name: LQTYStaking
-  #         file: ../lib-ethers/abi/LQTYStaking.json
-  #     eventHandlers:
-  #       - event: StakeChanged(indexed address,uint256)
-  #         handler: handleStakeChanged
-  #       - event: StakingGainsWithdrawn(indexed address,uint256,uint256)
-  #         handler: handleStakeGainsWithdrawn
 
   - name: ZUSDToken
     kind: ethereum/contract

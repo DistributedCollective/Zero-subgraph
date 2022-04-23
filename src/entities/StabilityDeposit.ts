@@ -1,6 +1,9 @@
 import { ethereum, Address, BigInt, BigDecimal } from "@graphprotocol/graph-ts";
 
-import { StabilityDepositChange, StabilityDeposit } from "../../generated/schema";
+import {
+  StabilityDepositChange,
+  StabilityDeposit,
+} from "../../generated/schema";
 
 import { decimalize, DECIMAL_ZERO, BIGINT_ZERO } from "../utils/bignumbers";
 
@@ -27,15 +30,21 @@ function getStabilityDeposit(_user: Address): StabilityDeposit {
   }
 }
 
-function createStabilityDepositChange(event: ethereum.Event): StabilityDepositChange {
+function createStabilityDepositChange(
+  event: ethereum.Event
+): StabilityDepositChange {
   let sequenceNumber = beginChange();
-  let stabilityDepositChange = new StabilityDepositChange(sequenceNumber.toString());
+  let stabilityDepositChange = new StabilityDepositChange(
+    sequenceNumber.toString()
+  );
   initChange(stabilityDepositChange, event, sequenceNumber);
 
   return stabilityDepositChange;
 }
 
-function finishStabilityDepositChange(stabilityDepositChange: StabilityDepositChange): void {
+function finishStabilityDepositChange(
+  stabilityDepositChange: StabilityDepositChange
+): void {
   finishChange(stabilityDepositChange);
   stabilityDepositChange.save();
 }
@@ -51,14 +60,17 @@ function updateStabilityDepositByOperation(
 
   stabilityDepositChange.stabilityDeposit = stabilityDeposit.id;
   stabilityDepositChange.stabilityDepositOperation = operation;
-  stabilityDepositChange.depositedAmountBefore = stabilityDeposit.depositedAmount;
+  stabilityDepositChange.depositedAmountBefore =
+    stabilityDeposit.depositedAmount;
 
   stabilityDeposit.depositedAmount = newDepositedAmount;
 
-  stabilityDepositChange.depositedAmountAfter = stabilityDeposit.depositedAmount;
-  stabilityDepositChange.depositedAmountChange = stabilityDepositChange.depositedAmountAfter.minus(
-    stabilityDepositChange.depositedAmountBefore
-  );
+  stabilityDepositChange.depositedAmountAfter =
+    stabilityDeposit.depositedAmount;
+  stabilityDepositChange.depositedAmountChange =
+    stabilityDepositChange.depositedAmountAfter.minus(
+      stabilityDepositChange.depositedAmountBefore
+    );
 
   if (collateralGain !== null) {
     stabilityDepositChange.collateralGain = collateralGain;
@@ -83,16 +95,18 @@ export function updateStabilityDeposit(
     return;
   }
 
-  if (owner.frontend != stabilityDeposit.frontend) {
-    // FrontEndTagSet is emitted just before UserDepositChanged event
-    // FrontEndTagSet sets the owner.frontend, so we can use that
-    stabilityDeposit.frontend = owner.frontend;
-  }
+  // if (owner.frontend != stabilityDeposit.frontend) {
+  //   // FrontEndTagSet is emitted just before UserDepositChanged event
+  //   // FrontEndTagSet sets the owner.frontend, so we can use that
+  //   stabilityDeposit.frontend = owner.frontend;
+  // }
 
   updateStabilityDepositByOperation(
     event,
     stabilityDeposit,
-    newDepositedAmount > stabilityDeposit.depositedAmount ? "depositTokens" : "withdrawTokens",
+    newDepositedAmount > stabilityDeposit.depositedAmount
+      ? "depositTokens"
+      : "withdrawTokens",
     newDepositedAmount
   );
 
@@ -103,15 +117,15 @@ export function withdrawCollateralGainFromStabilityDeposit(
   event: ethereum.Event,
   _user: Address,
   _ETH: BigInt,
-  _LUSDLoss: BigInt
+  _ZUSDLoss: BigInt
 ): void {
-  if (_ETH == BIGINT_ZERO && _LUSDLoss == BIGINT_ZERO) {
+  if (_ETH == BIGINT_ZERO && _ZUSDLoss == BIGINT_ZERO) {
     // Ignore "NOP" event
     return;
   }
 
   let stabilityDeposit = getStabilityDeposit(_user) as StabilityDeposit;
-  let depositLoss = decimalize(_LUSDLoss);
+  let depositLoss = decimalize(_ZUSDLoss);
   let newDepositedAmount = stabilityDeposit.depositedAmount.minus(depositLoss);
 
   updateStabilityDepositByOperation(

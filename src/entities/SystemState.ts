@@ -6,7 +6,6 @@ import {
   TroveChange,
   StabilityDepositChange,
   CollSurplusChange,
-  LqtyStakeChange
 } from "../../generated/schema";
 
 import {
@@ -14,7 +13,7 @@ import {
   DECIMAL_ZERO,
   DECIMAL_ONE,
   DECIMAL_COLLATERAL_GAS_COMPENSATION_DIVISOR,
-  DECIMAL_PRECISION
+  DECIMAL_PRECISION,
 } from "../utils/bignumbers";
 
 import { calculateCollateralRatio } from "../utils/collateralRatio";
@@ -23,7 +22,7 @@ import {
   isBorrowerOperation,
   isRedemption,
   isLiquidation,
-  isRecoveryModeLiquidation
+  isRecoveryModeLiquidation,
 } from "../types/TroveOperation";
 
 import { getGlobal, getSystemStateSequenceNumber } from "./Global";
@@ -44,7 +43,6 @@ export function getCurrentSystemState(): SystemState {
     newSystemState.totalDebt = DECIMAL_ZERO;
     newSystemState.tokensInStabilityPool = DECIMAL_ZERO;
     newSystemState.collSurplusPoolBalance = DECIMAL_ZERO;
-    newSystemState.totalLQTYTokensStaked = DECIMAL_ZERO;
     newSystemState.save();
 
     let global = getGlobal();
@@ -94,7 +92,10 @@ function finishPriceChange(priceChange: PriceChange): void {
  * Update SystemState through a PriceChange if _lastGoodPrice is different from the last recorded
  * price.
  */
-export function updatePrice(event: ethereum.Event, _lastGoodPrice: BigInt): void {
+export function updatePrice(
+  event: ethereum.Event,
+  _lastGoodPrice: BigInt
+): void {
   let systemState = getCurrentSystemState();
   let oldPrice = systemState.price;
   let newPrice = decimalize(_lastGoodPrice);
@@ -125,9 +126,12 @@ function tryToOffsetWithTokensFromStabilityPool(
 ): void {
   if (debtToLiquidate <= systemState.tokensInStabilityPool) {
     // Completely offset
-    systemState.totalCollateral = systemState.totalCollateral.minus(collateralToLiquidate);
+    systemState.totalCollateral = systemState.totalCollateral.minus(
+      collateralToLiquidate
+    );
     systemState.totalDebt = systemState.totalDebt.minus(debtToLiquidate);
-    systemState.tokensInStabilityPool = systemState.tokensInStabilityPool.minus(debtToLiquidate);
+    systemState.tokensInStabilityPool =
+      systemState.tokensInStabilityPool.minus(debtToLiquidate);
   } else if (systemState.tokensInStabilityPool > DECIMAL_ZERO) {
     // Partially offset, emptying the pool
     systemState.totalCollateral = systemState.totalCollateral.minus(
@@ -136,7 +140,9 @@ function tryToOffsetWithTokensFromStabilityPool(
         .div(debtToLiquidate)
         .truncate(DECIMAL_PRECISION)
     );
-    systemState.totalDebt = systemState.totalDebt.minus(systemState.tokensInStabilityPool);
+    systemState.totalDebt = systemState.totalDebt.minus(
+      systemState.tokensInStabilityPool
+    );
     systemState.tokensInStabilityPool = DECIMAL_ZERO;
   } else {
     // Empty pool
@@ -148,7 +154,9 @@ export function updateSystemStateByTroveChange(troveChange: TroveChange): void {
   let operation = troveChange.troveOperation;
 
   if (isBorrowerOperation(operation) || isRedemption(operation)) {
-    systemState.totalCollateral = systemState.totalCollateral.plus(troveChange.collateralChange);
+    systemState.totalCollateral = systemState.totalCollateral.plus(
+      troveChange.collateralChange
+    );
     systemState.totalDebt = systemState.totalDebt.plus(troveChange.debtChange);
   } else if (isLiquidation(operation)) {
     let collateral = troveChange.collateralBefore;
@@ -157,9 +165,14 @@ export function updateSystemStateByTroveChange(troveChange: TroveChange): void {
       .div(DECIMAL_COLLATERAL_GAS_COMPENSATION_DIVISOR)
       .truncate(DECIMAL_PRECISION);
 
-    systemState.totalCollateral = systemState.totalCollateral.minus(collateralGasCompensation);
+    systemState.totalCollateral = systemState.totalCollateral.minus(
+      collateralGasCompensation
+    );
 
-    if (!isRecoveryModeLiquidation(operation) || troveChange.collateralRatioBefore > DECIMAL_ONE) {
+    if (
+      !isRecoveryModeLiquidation(operation) ||
+      troveChange.collateralRatioBefore > DECIMAL_ONE
+    ) {
       tryToOffsetWithTokensFromStabilityPool(
         systemState,
         collateral.minus(collateralGasCompensation),
@@ -192,21 +205,13 @@ export function updateSystemStateByStabilityDepositChange(
   bumpSystemState(systemState);
 }
 
-export function updateSystemStateByCollSurplusChange(collSurplusChange: CollSurplusChange): void {
+export function updateSystemStateByCollSurplusChange(
+  collSurplusChange: CollSurplusChange
+): void {
   let systemState = getCurrentSystemState();
 
   systemState.collSurplusPoolBalance = systemState.collSurplusPoolBalance.plus(
     collSurplusChange.collSurplusChange
-  );
-
-  bumpSystemState(systemState);
-}
-
-export function updateSystemStateByLqtyStakeChange(stakeChange: LqtyStakeChange): void {
-  let systemState = getCurrentSystemState();
-
-  systemState.totalLQTYTokensStaked = systemState.totalLQTYTokensStaked.plus(
-    stakeChange.stakedAmountChange
   );
 
   bumpSystemState(systemState);
