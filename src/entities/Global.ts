@@ -1,4 +1,4 @@
-import { Value, BigInt } from "@graphprotocol/graph-ts";
+import { Value, BigInt, BigDecimal } from "@graphprotocol/graph-ts";
 
 import { Global } from "../../generated/schema";
 
@@ -26,19 +26,23 @@ export function getGlobal(): Global {
     newGlobal.totalNumberOfTroves = 0;
     newGlobal.rawTotalRedistributedCollateral = BIGINT_ZERO;
     newGlobal.rawTotalRedistributedDebt = BIGINT_ZERO;
-    newGlobal.totalBorrowingFeesPaid = DECIMAL_ZERO;
-    newGlobal.totalRedemptionFeesPaid = DECIMAL_ZERO;
+    newGlobal.totalBorrowingFeesPaidZUSD = DECIMAL_ZERO;
+    newGlobal.totalRedemptionFeesPaidRBTC = DECIMAL_ZERO;
+    newGlobal.totalStabilityPoolProfits = DECIMAL_ZERO;
+    newGlobal.totalLiquidationCompensation = DECIMAL_ZERO;
+    newGlobal.totalLiquidationVolume = DECIMAL_ZERO;
 
     return newGlobal;
   }
 }
 
 function increaseCounter(key: string): i32 {
-  const global = Global.load("only");
+  let global = getGlobal();
 
-  if (global != null) {
-    const count = global.changeCount;
-    global.changeCount = global.changeCount + 1;
+  const countStr = global.get(key);
+  if (countStr !== null) {
+    const count = countStr.toI32();
+    global.set(key, Value.fromI32(count + 1));
     global.save();
     return count;
   } else {
@@ -141,8 +145,42 @@ export function decreaseNumberOfTrovesClosedByOwner(): void {
 
 export function increaseTotalBorrowingFeesPaid(_ZUSDFee: BigInt): void {
   let global = getGlobal();
-  global.totalBorrowingFeesPaid = global.totalBorrowingFeesPaid.plus(
+  global.totalBorrowingFeesPaidZUSD = global.totalBorrowingFeesPaidZUSD.plus(
     decimalize(_ZUSDFee)
+  );
+  global.save();
+}
+
+export function increaseTotalRedemptionFeesPaid(_RBTCFee: BigInt): void {
+  let global = getGlobal();
+  global.totalRedemptionFeesPaidRBTC = global.totalRedemptionFeesPaidRBTC.plus(
+    decimalize(_RBTCFee)
+  );
+  global.save();
+}
+
+export function increaseTotalStabilityPoolProfits(profit: BigDecimal): void {
+  let global = getGlobal();
+  global.totalStabilityPoolProfits =
+    global.totalStabilityPoolProfits.plus(profit);
+  global.save();
+}
+
+export function increaseTotalLiquidationCompensation(
+  collateralGasCompensation: BigInt
+): void {
+  let global = getGlobal();
+  global.totalLiquidationCompensation =
+    global.totalLiquidationCompensation.plus(
+      decimalize(collateralGasCompensation)
+    );
+  global.save();
+}
+
+export function increaseTotalLiquidationVolume(volume: BigInt): void {
+  let global = getGlobal();
+  global.totalLiquidationVolume = global.totalLiquidationVolume.plus(
+    decimalize(volume)
   );
   global.save();
 }

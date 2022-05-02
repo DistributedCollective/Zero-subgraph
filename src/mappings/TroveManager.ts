@@ -3,15 +3,19 @@ import {
   TroveLiquidated,
   Liquidation,
   Redemption,
-  LTermsUpdated
+  LTermsUpdated,
 } from "../../generated/TroveManager/TroveManager";
 
 import { getTroveOperationFromTroveManagerOperation } from "../types/TroveOperation";
 
 import { finishCurrentLiquidation } from "../entities/Liquidation";
 import { finishCurrentRedemption } from "../entities/Redemption";
-import { applyRedistributionToTroveBeforeLiquidation, updateTrove } from "../entities/Trove";
+import {
+  applyRedistributionToTroveBeforeLiquidation,
+  updateTrove,
+} from "../entities/Trove";
 import { updateTotalRedistributed } from "../entities/Global";
+import { IUpdateRevenues, updateRevenues } from "../entities/Revenue";
 
 export function handleTroveUpdated(event: TroveUpdated): void {
   updateTrove(
@@ -38,6 +42,12 @@ export function handleLiquidation(event: Liquidation): void {
     event.params._collGasCompensation,
     event.params._ZUSDGasCompensation
   );
+
+  let revenueData = new IUpdateRevenues();
+  revenueData.liquidationVolume = event.params._liquidatedColl;
+  revenueData.liquidationCompensation = event.params._collGasCompensation;
+  revenueData.timestamp = event.block.timestamp;
+  updateRevenues(revenueData);
 }
 
 export function handleRedemption(event: Redemption): void {

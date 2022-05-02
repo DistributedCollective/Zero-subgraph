@@ -1,13 +1,11 @@
-import { BigInt } from "@graphprotocol/graph-ts";
+import { BigDecimal, BigInt } from "@graphprotocol/graph-ts";
 
 import {
   UserDepositChanged,
   RBTCGainWithdrawn,
-  FrontEndRegistered,
-  FrontEndTagSet,
 } from "../../generated/StabilityPool/StabilityPool";
 
-import { BIGINT_ZERO } from "../utils/bignumbers";
+import { BIGINT_ZERO, decimalize } from "../utils/bignumbers";
 
 import { getGlobal } from "../entities/Global";
 
@@ -15,7 +13,8 @@ import {
   updateStabilityDeposit,
   withdrawCollateralGainFromStabilityDeposit,
 } from "../entities/StabilityDeposit";
-import { registerFrontend } from "../entities/Frontend";
+import { getCurrentPrice } from "../entities/SystemState";
+import { updateRevenues, IUpdateRevenues } from "../entities/Revenue";
 
 // Read the value of tmpDepositUpdate from the Global entity, and replace it with:
 //  - null, if it wasn't null
@@ -63,12 +62,25 @@ export function handleETHGainWithdrawn(event: RBTCGainWithdrawn): void {
       depositUpdate as BigInt
     );
   }
+
+  let stabilityPoolProfit = calculateStabilityPoolProfit(
+    event.params._RBTC,
+    event.params._ZUSDLoss
+  );
+  let revenueData = new IUpdateRevenues();
+  revenueData.stabilityPoolProfit = stabilityPoolProfit;
+  revenueData.timestamp = event.block.timestamp;
+  updateRevenues(revenueData);
 }
 
-export function handleFrontendRegistered(event: FrontEndRegistered): void {
-  registerFrontend(event.params._frontEnd, event.params._kickbackRate);
-}
+function calculateStabilityPoolProfit(
+  rbtcCollateralSent: BigInt,
+  zusdTaken: BigInt
+): BigDecimal {
+  const rbtcAmount = decimalize(rbtcCollateralSent);
+  const zusdAmount = decimalize(zusdTaken);
+  const price = getCurrentPrice();
+  const profit = price.div(rbtcAmount).minus(zusdAmount.div(price));
 
-// export function handleFrontendTagSet(event: FrontEndTagSet): void {
-//   assignFrontendToDepositor(event.params._depositor, event.params._frontEnd);
-// }
+  return profit;
+}

@@ -10,6 +10,7 @@ import {
   updateTrove,
 } from "../entities/Trove";
 import { increaseTotalBorrowingFeesPaid } from "../entities/Global";
+import { IUpdateRevenues, updateRevenues } from "../entities/Revenue";
 
 export function handleTroveUpdated(event: TroveUpdated): void {
   updateTrove(
@@ -25,4 +26,8 @@ export function handleTroveUpdated(event: TroveUpdated): void {
 export function handleZUSDBorrowingFeePaid(event: ZUSDBorrowingFeePaid): void {
   setBorrowingFeeOfLastTroveChange(event.params._ZUSDFee);
   increaseTotalBorrowingFeesPaid(event.params._ZUSDFee);
+  let revenueData = new IUpdateRevenues();
+  revenueData.borrowFeeZUSD = event.params._ZUSDFee;
+  revenueData.timestamp = event.block.timestamp;
+  updateRevenues(revenueData);
 }

@@ -7,6 +7,7 @@ import { decimalize, DECIMAL_ZERO } from "../utils/bignumbers";
 import { getGlobal, getRedemptionSequenceNumber } from "./Global";
 import { getTransaction } from "./Transaction";
 import { getUser } from "./User";
+import { IUpdateRevenues, updateRevenues } from "./Revenue";
 
 export function getCurrentRedemption(event: ethereum.Event): Redemption {
   let currentRedemptionId = getGlobal().currentRedemption;
@@ -57,6 +58,12 @@ export function finishCurrentRedemption(
 
   let global = getGlobal();
   global.currentRedemption = null;
-  global.totalRedemptionFeesPaid = global.totalRedemptionFeesPaid.plus(fee);
+  global.totalRedemptionFeesPaidRBTC =
+    global.totalRedemptionFeesPaidRBTC.plus(fee);
   global.save();
+
+  let revenueData = new IUpdateRevenues();
+  revenueData.redemptionFeeRBTC = _ETHFee;
+  revenueData.timestamp = event.block.timestamp;
+  updateRevenues(revenueData);
 }
