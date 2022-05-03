@@ -1,0 +1,13 @@
+{
+    "network": "mainnet",
+    "node": {
+        "network": "mainnet",
+        "address": "https://testnet.sovryn.app/rpc",
+        "log_level": "debug"
+    },
+    "ActivePool": {
+        "network": "mainnet",
+        "address": "0x4AaffD5a31dEe60c1a07fCf93a012666310A155a",
+        "startBlock": 0
+    }
+}

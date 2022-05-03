@@ -33,7 +33,7 @@ type Global @entity {
   "Total redistributed per-stake debt"
   rawTotalRedistributedDebt: BigInt!
 
-  currentActivePool: ActivePool
+  # currentActivePool: ActivePool
   currentSystemState: SystemState
 
   "Only used internally as temporary storage. Will always be null in queries"
@@ -347,4 +347,96 @@ type RevenueWeekly @entity {
   """
   liquidationCompensation: BigDecimal!
   periodStartUnix: BigInt!
+}
+
+# Generated ActivePool entities 
+
+type ActivePoolAddressChanged @entity {
+  id: ID!
+  _newActivePoolAddress: Bytes! # address
+  timestamp: BigInt!
+  emittedBy: Bytes! #address
+  transaction: Transaction!
+}
+
+type ActivePoolETHBalanceUpdated @entity {
+  id: ID!
+  _ETH: BigInt! # uint256
+  timestamp: BigInt!
+  emittedBy: Bytes! #address
+  transaction: Transaction!
+}
+
+type ActivePoolZUSDDebtUpdated @entity {
+  id: ID!
+  _ZUSDDebt: BigInt! # uint256
+  timestamp: BigInt!
+  emittedBy: Bytes! #address
+  transaction: Transaction!
+}
+
+type BorrowerOperationsAddressChanged @entity {
+  id: ID!
+  _newBorrowerOperationsAddress: Bytes! # address
+  timestamp: BigInt!
+  emittedBy: Bytes! #address
+  transaction: Transaction!
+}
+
+type DefaultPoolAddressChanged @entity {
+  id: ID!
+  _newDefaultPoolAddress: Bytes! # address
+  timestamp: BigInt!
+  emittedBy: Bytes! #address
+  transaction: Transaction!
+}
+
+type ETHBalanceUpdated @entity {
+  id: ID!
+  _newBalance: BigInt! # uint256
+  timestamp: BigInt!
+  emittedBy: Bytes! #address
+  transaction: Transaction!
+}
+
+type EtherSent @entity {
+  id: ID!
+  _to: Bytes! # address
+  _amount: BigInt! # uint256
+  timestamp: BigInt!
+  emittedBy: Bytes! #address
+  transaction: Transaction!
+}
+
+type OwnershipTransferred @entity {
+  id: ID!
+  previousOwner: Bytes! # address
+  newOwner: Bytes! # address
+  timestamp: BigInt!
+  emittedBy: Bytes! #address
+  transaction: Transaction!
+}
+
+type StabilityPoolAddressChanged @entity {
+  id: ID!
+  _newStabilityPoolAddress: Bytes! # address
+  timestamp: BigInt!
+  emittedBy: Bytes! #address
+  transaction: Transaction!
+}
+
+type TroveManagerAddressChanged @entity {
+  id: ID!
+  _newTroveManagerAddress: Bytes! # address
+  timestamp: BigInt!
+  emittedBy: Bytes! #address
+  transaction: Transaction!
+}
+
+type ZUSDBalanceUpdated @entity {
+  id: ID!
+  _newBalance: BigInt! # uint256
+  timestamp: BigInt!
+  emittedBy: Bytes! #address
+  transaction: Transaction!
 }
