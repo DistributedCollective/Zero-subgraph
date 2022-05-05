@@ -2,7 +2,7 @@ import { Value, BigInt, BigDecimal } from "@graphprotocol/graph-ts";
 
 import { Global } from "../../generated/schema";
 
-import { BIGINT_ZERO, DECIMAL_ZERO, decimalize } from "../utils/bignumbers";
+import { BIGINT_ZERO, DECIMAL_ZERO } from "../utils/bignumbers";
 
 const onlyGlobalId = "only";
 
@@ -143,19 +143,17 @@ export function decreaseNumberOfTrovesClosedByOwner(): void {
   global.save();
 }
 
-export function increaseTotalBorrowingFeesPaid(_ZUSDFee: BigInt): void {
+export function increaseTotalBorrowingFeesPaid(_ZUSDFee: BigDecimal): void {
   let global = getGlobal();
-  global.totalBorrowingFeesPaidZUSD = global.totalBorrowingFeesPaidZUSD.plus(
-    decimalize(_ZUSDFee)
-  );
+  global.totalBorrowingFeesPaidZUSD =
+    global.totalBorrowingFeesPaidZUSD.plus(_ZUSDFee);
   global.save();
 }
 
-export function increaseTotalRedemptionFeesPaid(_RBTCFee: BigInt): void {
+export function increaseTotalRedemptionFeesPaid(_RBTCFee: BigDecimal): void {
   let global = getGlobal();
-  global.totalRedemptionFeesPaidRBTC = global.totalRedemptionFeesPaidRBTC.plus(
-    decimalize(_RBTCFee)
-  );
+  global.totalRedemptionFeesPaidRBTC =
+    global.totalRedemptionFeesPaidRBTC.plus(_RBTCFee);
   global.save();
 }
 
@@ -166,21 +164,26 @@ export function increaseTotalStabilityPoolProfits(profit: BigDecimal): void {
   global.save();
 }
 
-export function increaseTotalLiquidationCompensation(
-  collateralGasCompensation: BigInt
+export function decreaseTotalStabilityPoolProfits(
+  profitChange: BigDecimal
 ): void {
   let global = getGlobal();
-  global.totalLiquidationCompensation =
-    global.totalLiquidationCompensation.plus(
-      decimalize(collateralGasCompensation)
-    );
+  global.totalStabilityPoolProfits =
+    global.totalStabilityPoolProfits.minus(profitChange);
   global.save();
 }
 
-export function increaseTotalLiquidationVolume(volume: BigInt): void {
+export function increaseTotalLiquidationCompensation(
+  collateralGasCompensation: BigDecimal
+): void {
   let global = getGlobal();
-  global.totalLiquidationVolume = global.totalLiquidationVolume.plus(
-    decimalize(volume)
-  );
+  global.totalLiquidationCompensation =
+    global.totalLiquidationCompensation.plus(collateralGasCompensation);
+  global.save();
+}
+
+export function increaseTotalLiquidationVolume(volume: BigDecimal): void {
+  let global = getGlobal();
+  global.totalLiquidationVolume = global.totalLiquidationVolume.plus(volume);
   global.save();
 }

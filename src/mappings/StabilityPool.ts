@@ -14,7 +14,6 @@ import {
   withdrawCollateralGainFromStabilityDeposit,
 } from "../entities/StabilityDeposit";
 import { getCurrentPrice } from "../entities/SystemState";
-import { updateRevenues, IUpdateRevenues } from "../entities/Revenue";
 
 // Read the value of tmpDepositUpdate from the Global entity, and replace it with:
 //  - null, if it wasn't null
@@ -62,25 +61,4 @@ export function handleETHGainWithdrawn(event: RBTCGainWithdrawn): void {
       depositUpdate as BigInt
     );
   }
-
-  let stabilityPoolProfit = calculateStabilityPoolProfit(
-    event.params._RBTC,
-    event.params._ZUSDLoss
-  );
-  let revenueData = new IUpdateRevenues();
-  revenueData.stabilityPoolProfit = stabilityPoolProfit;
-  revenueData.timestamp = event.block.timestamp;
-  updateRevenues(revenueData);
-}
-
-function calculateStabilityPoolProfit(
-  rbtcCollateralSent: BigInt,
-  zusdTaken: BigInt
-): BigDecimal {
-  const rbtcAmount = decimalize(rbtcCollateralSent);
-  const zusdAmount = decimalize(zusdTaken);
-  const price = getCurrentPrice();
-  const profit = price.div(rbtcAmount).minus(zusdAmount.div(price));
-
-  return profit;
 }

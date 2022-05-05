@@ -1,4 +1,8 @@
-import { RevenueDaily, RevenueWeekly } from "../../generated/schema";
+import {
+  PriceChange,
+  RevenueDaily,
+  RevenueWeekly,
+} from "../../generated/schema";
 import { BigDecimal, BigInt } from "@graphprotocol/graph-ts";
 import { decimalize } from "../utils/bignumbers";
 import { getCurrentPrice } from "./SystemState";
@@ -7,75 +11,101 @@ import {
   increaseTotalLiquidationVolume,
   increaseTotalRedemptionFeesPaid,
   increaseTotalStabilityPoolProfits,
+  increaseTotalBorrowingFeesPaid,
 } from "./Global";
 
 export class IUpdateRevenues {
-  borrowFeeZUSD: BigInt = BigInt.zero();
-  redemptionFeeRBTC: BigInt = BigInt.zero();
-  stabilityPoolProfit: BigDecimal = BigDecimal.zero();
-  liquidationVolume: BigInt = BigInt.zero();
-  liquidationCompensation: BigInt = BigInt.zero();
+  amount!: BigDecimal;
   timestamp!: BigInt;
 }
 
-export function updateRevenues(data: IUpdateRevenues): void {
-  let dayEntity = createAndReturnDayEntity(data.timestamp);
-  let weekEntity = createAndReturnWeekEntity(data.timestamp);
+class RevenueEntities {
+  day: RevenueDaily;
+  week: RevenueWeekly;
+}
 
-  if (data.borrowFeeZUSD.gt(BigInt.zero())) {
-    const decimalBorrowFeeZUSD = decimalize(data.borrowFeeZUSD);
-    dayEntity.borrowFeeZUSD =
-      dayEntity.borrowFeeZUSD.plus(decimalBorrowFeeZUSD);
-    weekEntity.borrowFeeZUSD =
-      weekEntity.borrowFeeZUSD.plus(decimalBorrowFeeZUSD);
+function getRevenueEntities(timestamp: BigInt): RevenueEntities {
+  return {
+    day: createAndReturnDayEntity(timestamp),
+    week: createAndReturnWeekEntity(timestamp),
+  };
+}
+
+function saveRevenueEntities(entities: RevenueEntities): void {
+  entities.day.save();
+  entities.week.save();
+}
+
+export function updateBorrowFee(data: IUpdateRevenues): void {
+  const revenueEntities = getRevenueEntities(data.timestamp);
+  revenueEntities.day.borrowFeeZUSD = revenueEntities.day.borrowFeeZUSD.plus(
+    data.amount
+  );
+  revenueEntities.week.borrowFeeZUSD = revenueEntities.week.borrowFeeZUSD.plus(
+    data.amount
+  );
+  increaseTotalBorrowingFeesPaid(data.amount);
+  saveRevenueEntities(revenueEntities);
+}
+
+export function updateRedemptionFee(data: IUpdateRevenues): void {
+  const revenueEntities = getRevenueEntities(data.timestamp);
+  revenueEntities.day.redemptionFeeRBTC =
+    revenueEntities.day.redemptionFeeRBTC.plus(data.amount);
+  revenueEntities.week.redemptionFeeRBTC =
+    revenueEntities.week.redemptionFeeRBTC.plus(data.amount);
+  increaseTotalRedemptionFeesPaid(data.amount);
+  saveRevenueEntities(revenueEntities);
+}
+
+export function updateLiquidationVolume(data: IUpdateRevenues): void {
+  const revenueEntities = getRevenueEntities(data.timestamp);
+  revenueEntities.day.liquidationVolume =
+    revenueEntities.day.liquidationVolume.plus(data.amount);
+  revenueEntities.week.liquidationVolume =
+    revenueEntities.week.liquidationVolume.plus(data.amount);
+  increaseTotalLiquidationVolume(data.amount);
+  saveRevenueEntities(revenueEntities);
+}
+
+export function updateLiquidationCompensation(data: IUpdateRevenues): void {
+  const revenueEntities = getRevenueEntities(data.timestamp);
+  revenueEntities.day.liquidationCompensation =
+    revenueEntities.day.liquidationCompensation.plus(data.amount);
+  revenueEntities.week.liquidationCompensation =
+    revenueEntities.week.liquidationCompensation.plus(data.amount);
+  increaseTotalLiquidationCompensation(data.amount);
+  saveRevenueEntities(revenueEntities);
+}
+
+export function updateStabilityPoolProfit(data: IUpdateRevenues): void {
+  const revenueEntities = getRevenueEntities(data.timestamp);
+  revenueEntities.day.stabilityPoolProfit =
+    revenueEntities.day.stabilityPoolProfit.plus(data.amount);
+  revenueEntities.week.stabilityPoolProfit =
+    revenueEntities.week.stabilityPoolProfit.plus(data.amount);
+  increaseTotalStabilityPoolProfits(data.amount);
+  saveRevenueEntities(revenueEntities);
+}
+
+export enum StabilityPoolProfitComponent {
+  RbtcCollateral,
+  ZusdDebt,
+}
+
+export function calculateStabilityPoolProfit(
+  type: StabilityPoolProfitComponent,
+  amount: BigInt
+): BigDecimal {
+  const price = getCurrentPrice();
+  if (amount.gt(BigInt.zero()) && price.gt(BigDecimal.zero())) {
+    if (type === StabilityPoolProfitComponent.RbtcCollateral) {
+      return decimalize(amount);
+    } else if (type === StabilityPoolProfitComponent.ZusdDebt) {
+      return decimalize(amount).div(price).neg();
+    }
   }
-
-  if (data.redemptionFeeRBTC.gt(BigInt.zero())) {
-    const decimalRedemptionFeeRBTC = decimalize(data.redemptionFeeRBTC);
-    dayEntity.redemptionFeeRBTC = dayEntity.redemptionFeeRBTC.plus(
-      decimalRedemptionFeeRBTC
-    );
-    weekEntity.redemptionFeeRBTC = weekEntity.redemptionFeeRBTC.plus(
-      decimalRedemptionFeeRBTC
-    );
-    increaseTotalRedemptionFeesPaid(data.redemptionFeeRBTC);
-  }
-
-  if (data.liquidationVolume.gt(BigInt.zero())) {
-    const decimalLiquidationVolume = decimalize(data.liquidationVolume);
-    dayEntity.liquidationVolume = dayEntity.liquidationVolume.plus(
-      decimalLiquidationVolume
-    );
-    weekEntity.liquidationVolume = weekEntity.liquidationVolume.plus(
-      decimalLiquidationVolume
-    );
-    increaseTotalLiquidationVolume(data.liquidationVolume);
-  }
-
-  if (data.liquidationCompensation.gt(BigInt.zero())) {
-    const decimalLiquidationCompensation = decimalize(
-      data.liquidationCompensation
-    );
-    dayEntity.liquidationCompensation = dayEntity.liquidationCompensation.plus(
-      decimalLiquidationCompensation
-    );
-    weekEntity.liquidationCompensation =
-      weekEntity.liquidationCompensation.plus(decimalLiquidationCompensation);
-    increaseTotalLiquidationCompensation(data.liquidationCompensation);
-  }
-
-  if (data.stabilityPoolProfit.gt(BigDecimal.zero())) {
-    dayEntity.liquidationCompensation = dayEntity.stabilityPoolProfit.plus(
-      data.stabilityPoolProfit
-    );
-    weekEntity.stabilityPoolProfit = weekEntity.stabilityPoolProfit.plus(
-      data.stabilityPoolProfit
-    );
-    increaseTotalStabilityPoolProfits(data.stabilityPoolProfit);
-  }
-
-  dayEntity.save();
-  weekEntity.save();
+  return BigDecimal.zero();
 }
 
 function createAndReturnDayEntity(timestamp: BigInt): RevenueDaily {

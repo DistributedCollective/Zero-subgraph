@@ -15,7 +15,12 @@ import {
   updateTrove,
 } from "../entities/Trove";
 import { updateTotalRedistributed } from "../entities/Global";
-import { IUpdateRevenues, updateRevenues } from "../entities/Revenue";
+import {
+  IUpdateRevenues,
+  updateLiquidationCompensation,
+  updateLiquidationVolume,
+} from "../entities/Revenue";
+import { decimalize } from "../utils/bignumbers";
 
 export function handleTroveUpdated(event: TroveUpdated): void {
   updateTrove(
@@ -43,11 +48,17 @@ export function handleLiquidation(event: Liquidation): void {
     event.params._ZUSDGasCompensation
   );
 
-  let revenueData = new IUpdateRevenues();
-  revenueData.liquidationVolume = event.params._liquidatedColl;
-  revenueData.liquidationCompensation = event.params._collGasCompensation;
-  revenueData.timestamp = event.block.timestamp;
-  updateRevenues(revenueData);
+  let liquidationVolumeData = new IUpdateRevenues();
+  liquidationVolumeData.amount = decimalize(event.params._liquidatedColl);
+  liquidationVolumeData.timestamp = event.block.timestamp;
+  updateLiquidationVolume(liquidationVolumeData);
+
+  let liquidationCompensationData = new IUpdateRevenues();
+  liquidationCompensationData.amount = decimalize(
+    event.params._collGasCompensation
+  );
+  liquidationCompensationData.timestamp = event.block.timestamp;
+  updateLiquidationCompensation(liquidationCompensationData);
 }
 
 export function handleRedemption(event: Redemption): void {

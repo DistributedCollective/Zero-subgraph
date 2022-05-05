@@ -24,6 +24,11 @@ import {
   TroveManagerAddressChanged,
   ZUSDBalanceUpdated,
 } from "../../generated/schema";
+import {
+  updateStabilityPoolProfit,
+  calculateStabilityPoolProfit,
+  StabilityPoolProfitComponent,
+} from "../entities/Revenue";
 
 import { getTransaction } from "../entities/Transaction";
 
@@ -121,6 +126,21 @@ export function handleEtherSent(event: EtherSentEvent): void {
   entity.timestamp = event.block.timestamp;
   entity.emittedBy = event.address;
   entity.save();
+
+  /** TODO: Don't hardcode this */
+  if (
+    entity._to.toHexString() == "0x0dcedf5e080ed1d58b27b030d042d60971408d26" //Stability Pool address
+  ) {
+    /** Update stability pool profit */
+    const profit = calculateStabilityPoolProfit(
+      StabilityPoolProfitComponent.RbtcCollateral,
+      entity._amount
+    );
+    updateStabilityPoolProfit({
+      amount: profit,
+      timestamp: event.block.timestamp,
+    });
+  }
 }
 
 export function handleOwnershipTransferred(
