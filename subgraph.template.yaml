@@ -205,27 +205,6 @@ dataSources:
         - name: ActivePool
           file: ./abi/ActivePool.json
       eventHandlers:
-        
-        - event: ActivePoolAddressChanged(address)
-          handler: handleActivePoolAddressChanged
-        - event: ActivePoolETHBalanceUpdated(uint256)
-          handler: handleActivePoolETHBalanceUpdated
-        - event: ActivePoolZUSDDebtUpdated(uint256)
-          handler: handleActivePoolZUSDDebtUpdated
-        - event: BorrowerOperationsAddressChanged(address)
-          handler: handleBorrowerOperationsAddressChanged
-        - event: DefaultPoolAddressChanged(address)
-          handler: handleDefaultPoolAddressChanged
-        - event: ETHBalanceUpdated(uint256)
-          handler: handleETHBalanceUpdated
         - event: EtherSent(address,uint256)
           handler: handleEtherSent
-        - event: OwnershipTransferred(indexed address,indexed address)
-          handler: handleOwnershipTransferred
-        - event: StabilityPoolAddressChanged(address)
-          handler: handleStabilityPoolAddressChanged
-        - event: TroveManagerAddressChanged(address)
-          handler: handleTroveManagerAddressChanged
-        - event: ZUSDBalanceUpdated(uint256)
-          handler: handleZUSDBalanceUpdated
       file: ./src/mappings/ActivePool.ts

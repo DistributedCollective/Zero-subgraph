@@ -19,8 +19,11 @@ import {
   IUpdateRevenues,
   updateLiquidationCompensation,
   updateLiquidationVolume,
+  updateRedemptionFee,
 } from "../entities/Revenue";
 import { decimalize } from "../utils/bignumbers";
+import { BigDecimal } from "@graphprotocol/graph-ts";
+import { RedemptionRaw } from "../../generated/schema";
 
 export function handleTroveUpdated(event: TroveUpdated): void {
   updateTrove(
@@ -62,6 +65,15 @@ export function handleLiquidation(event: Liquidation): void {
 }
 
 export function handleRedemption(event: Redemption): void {
+  let redemptionRawEntity = new RedemptionRaw(
+    event.transaction.hash.toHexString() + "_" + event.logIndex.toHexString()
+  );
+  redemptionRawEntity._attemptedZUSDAmount = event.params._attemptedZUSDAmount;
+  redemptionRawEntity._actualZUSDAmount = event.params._actualZUSDAmount;
+  redemptionRawEntity._RBTCFee = event.params._RBTCFee;
+  redemptionRawEntity._RBTCSent = event.params._RBTCSent;
+  redemptionRawEntity.save();
+
   finishCurrentRedemption(
     event,
     event.params._attemptedZUSDAmount,
@@ -69,6 +81,14 @@ export function handleRedemption(event: Redemption): void {
     event.params._RBTCSent,
     event.params._RBTCFee
   );
+
+  // let revenueData = new IUpdateRevenues();
+  // revenueData.amount = decimalize(event.params._RBTCFee);
+  // revenueData.timestamp = event.block.timestamp;
+  updateRedemptionFee({
+    amount: BigDecimal.fromString("1"),
+    timestamp: event.block.timestamp,
+  });
 }
 
 export function handleLTermsUpdated(event: LTermsUpdated): void {

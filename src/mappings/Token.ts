@@ -13,7 +13,7 @@ export function handleTokenTransfer(event: Transfer): void {
 
   /** Check if tokens are burned from the stability pool */
   if (
-    event.params.to.toHexString() === ZERO_ADDRESS &&
+    event.params.to.toHexString() == ZERO_ADDRESS &&
     /** TODO: Don't hard code this */
     event.params.from.toHexString() ==
       "0x0dcedf5e080ed1d58b27b030d042d60971408d26" //Stability pool address

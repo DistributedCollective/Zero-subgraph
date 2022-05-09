@@ -3,7 +3,7 @@ import {
   RevenueDaily,
   RevenueWeekly,
 } from "../../generated/schema";
-import { BigDecimal, BigInt } from "@graphprotocol/graph-ts";
+import { bigDecimal, BigDecimal, BigInt } from "@graphprotocol/graph-ts";
 import { decimalize } from "../utils/bignumbers";
 import { getCurrentPrice } from "./SystemState";
 import {
@@ -38,23 +38,38 @@ function saveRevenueEntities(entities: RevenueEntities): void {
 
 export function updateBorrowFee(data: IUpdateRevenues): void {
   const revenueEntities = getRevenueEntities(data.timestamp);
+  const price = getCurrentPrice();
+  const feeConvertedToRBTC = data.amount.div(price);
   revenueEntities.day.borrowFeeZUSD = revenueEntities.day.borrowFeeZUSD.plus(
     data.amount
   );
   revenueEntities.week.borrowFeeZUSD = revenueEntities.week.borrowFeeZUSD.plus(
     data.amount
   );
-  increaseTotalBorrowingFeesPaid(data.amount);
+  revenueEntities.day.borrowFeeRBTC =
+    revenueEntities.day.borrowFeeRBTC.plus(feeConvertedToRBTC);
+  revenueEntities.week.borrowFeeRBTC =
+    revenueEntities.week.borrowFeeRBTC.plus(feeConvertedToRBTC);
+  increaseTotalBorrowingFeesPaid(data.amount, feeConvertedToRBTC);
   saveRevenueEntities(revenueEntities);
 }
 
 export function updateRedemptionFee(data: IUpdateRevenues): void {
   const revenueEntities = getRevenueEntities(data.timestamp);
+  const price = getCurrentPrice();
+  const feeConvertedToZUSD = data.amount.times(price);
+
   revenueEntities.day.redemptionFeeRBTC =
     revenueEntities.day.redemptionFeeRBTC.plus(data.amount);
   revenueEntities.week.redemptionFeeRBTC =
     revenueEntities.week.redemptionFeeRBTC.plus(data.amount);
-  increaseTotalRedemptionFeesPaid(data.amount);
+
+  revenueEntities.day.redemptionFeeZUSD =
+    revenueEntities.day.redemptionFeeZUSD.plus(feeConvertedToZUSD);
+  revenueEntities.week.redemptionFeeZUSD =
+    revenueEntities.week.redemptionFeeZUSD.plus(feeConvertedToZUSD);
+
+  increaseTotalRedemptionFeesPaid(data.amount, feeConvertedToZUSD);
   saveRevenueEntities(revenueEntities);
 }
 

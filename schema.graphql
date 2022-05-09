@@ -18,10 +18,10 @@ type Global @entity {
   totalBorrowingFeesPaidZUSD: BigDecimal!
   "Total amount of RBTC paid as redemption fees"
   totalRedemptionFeesPaidRBTC: BigDecimal!
-  # "Total amount of ZUSD paid as borrowing fees converted to RBTC"
-  # totalBorrowingFeesPaidRBTC: BigDecimal!
-  # "Total amount of RBTC paid as redemption fees converted to ZUSD"
-  # totalRedemptionFeesPaidZUSD: BigDecimal!
+  "Total amount of ZUSD paid as borrowing fees converted to RBTC"
+  totalBorrowingFeesPaidRBTC: BigDecimal!
+  "Total amount of RBTC paid as redemption fees converted to ZUSD"
+  totalRedemptionFeesPaidZUSD: BigDecimal!
 
   totalStabilityPoolProfits: BigDecimal!
   totalLiquidationCompensation: BigDecimal!
@@ -91,7 +91,7 @@ enum TroveStatus {
 }
 
 type Trove @entity {
-  "Owner's ID + '-' + an incremented integer"
+  "Owner's ID"
   id: ID!
 
   owner: User!
@@ -258,6 +258,15 @@ type Redemption @entity {
   troveChanges: [TroveChange!]! @derivedFrom(field: "redemption")
 }
 
+# This event is here for debugging purposes only
+type RedemptionRaw @entity {
+  id: ID!
+  _attemptedZUSDAmount: BigInt!
+  _actualZUSDAmount: BigInt!
+  _RBTCSent: BigInt!
+  _RBTCFee: BigInt!
+}
+
 type CollSurplusChange implements Change @entity {
   id: ID!
   sequenceNumber: Int!
@@ -312,7 +321,7 @@ type RevenueDaily @entity {
   """
   Stability Pool profit is the sum of profits accrued to the SP in the given time period; 
   each profit event is calculated at the time of each liquidation transaction as: 
-  (USD price of RBTC at the time of the liquidation / amount of RBTC collateral sent to the SP at the time of the liquidation) - (amount of ZUSD taken from the SP to service the liquidation / USD price of RBTC at the time of the liquidation)
+  amount of RBTC collateral sent to the SP at the time of the liquidation - (amount of ZUSD taken from the SP to service the liquidation / USD price of RBTC at the time of the liquidation)
   """
   stabilityPoolProfit: BigDecimal!
   """
@@ -347,96 +356,4 @@ type RevenueWeekly @entity {
   """
   liquidationCompensation: BigDecimal!
   periodStartUnix: BigInt!
-}
-
-# Generated ActivePool entities 
-
-type ActivePoolAddressChanged @entity {
-  id: ID!
-  _newActivePoolAddress: Bytes! # address
-  timestamp: BigInt!
-  emittedBy: Bytes! #address
-  transaction: Transaction!
-}
-
-type ActivePoolETHBalanceUpdated @entity {
-  id: ID!
-  _ETH: BigInt! # uint256
-  timestamp: BigInt!
-  emittedBy: Bytes! #address
-  transaction: Transaction!
-}
-
-type ActivePoolZUSDDebtUpdated @entity {
-  id: ID!
-  _ZUSDDebt: BigInt! # uint256
-  timestamp: BigInt!
-  emittedBy: Bytes! #address
-  transaction: Transaction!
-}
-
-type BorrowerOperationsAddressChanged @entity {
-  id: ID!
-  _newBorrowerOperationsAddress: Bytes! # address
-  timestamp: BigInt!
-  emittedBy: Bytes! #address
-  transaction: Transaction!
-}
-
-type DefaultPoolAddressChanged @entity {
-  id: ID!
-  _newDefaultPoolAddress: Bytes! # address
-  timestamp: BigInt!
-  emittedBy: Bytes! #address
-  transaction: Transaction!
-}
-
-type ETHBalanceUpdated @entity {
-  id: ID!
-  _newBalance: BigInt! # uint256
-  timestamp: BigInt!
-  emittedBy: Bytes! #address
-  transaction: Transaction!
-}
-
-type EtherSent @entity {
-  id: ID!
-  _to: Bytes! # address
-  _amount: BigInt! # uint256
-  timestamp: BigInt!
-  emittedBy: Bytes! #address
-  transaction: Transaction!
-}
-
-type OwnershipTransferred @entity {
-  id: ID!
-  previousOwner: Bytes! # address
-  newOwner: Bytes! # address
-  timestamp: BigInt!
-  emittedBy: Bytes! #address
-  transaction: Transaction!
-}
-
-type StabilityPoolAddressChanged @entity {
-  id: ID!
-  _newStabilityPoolAddress: Bytes! # address
-  timestamp: BigInt!
-  emittedBy: Bytes! #address
-  transaction: Transaction!
-}
-
-type TroveManagerAddressChanged @entity {
-  id: ID!
-  _newTroveManagerAddress: Bytes! # address
-  timestamp: BigInt!
-  emittedBy: Bytes! #address
-  transaction: Transaction!
-}
-
-type ZUSDBalanceUpdated @entity {
-  id: ID!
-  _newBalance: BigInt! # uint256
-  timestamp: BigInt!
-  emittedBy: Bytes! #address
-  transaction: Transaction!
 }
