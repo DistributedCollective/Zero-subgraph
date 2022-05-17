@@ -1,42 +1,42 @@
 {
-    "network": "mainnet",
+    "network": "testnet",
     "node": {
-        "network": "mainnet",
+        "network": "testnet",
         "address": "https://testnet.sovryn.app/rpc",
         "log_level": "debug"
     },
     "ActivePool": {
-        "network": "mainnet",
+        "network": "testnet",
         "address": "0x4AaffD5a31dEe60c1a07fCf93a012666310A155a",
         "startBlock": 2383375
     },
     "TroveManager": {
-        "network": "mainnet",
+        "network": "testnet",
         "address": "0x0464f1dc6C28D71C849c623610d33a45ce135B39",
         "startBlock": 2383375
     },
     "BorrowerOperations": {
-        "network": "mainnet",
+        "network": "testnet",
         "address": "0x71F14023E3eEACdD028E49a6776E81BB04d60b98",
         "startBlock": 2383375
     },
     "PriceFeed": {
-        "network": "mainnet",
+        "network": "testnet",
         "address": "0x46025a89d6F1BFfD1C0Ae9E98e39725e54A11e60",
         "startBlock": 2383375
     },
     "StabilityPool": {
-        "network": "mainnet",
+        "network": "testnet",
         "address": "0x0DcedF5e080ED1D58B27b030d042D60971408D26",
         "startBlock": 2383375
     },
     "CollSurplusPool": {
-        "network": "mainnet",
+        "network": "testnet",
         "address": "0xAC0Bcbf50f27a60647109A229c4409E1369350C3",
         "startBlock": 2383375
     },
     "ZUSDToken": {
-        "network": "mainnet",
+        "network": "testnet",
         "address": "0x71A2D1f9611eA45181aee147A84673f355894D70",
         "startBlock": 2383375
     }

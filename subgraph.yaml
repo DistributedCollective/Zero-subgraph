@@ -7,7 +7,7 @@ schema:
 dataSources:
   - name: TroveManager
     kind: ethereum/contract
-    network: mainnet
+    network: testnet
     source:
       abi: TroveManager
       address: "0x0464f1dc6C28D71C849c623610d33a45ce135B39"
@@ -43,7 +43,7 @@ dataSources:
 
   - name: BorrowerOperations
     kind: ethereum/contract
-    network: mainnet
+    network: testnet
     source:
       abi: BorrowerOperations
       address: "0x71F14023E3eEACdD028E49a6776E81BB04d60b98"
@@ -71,7 +71,7 @@ dataSources:
 
   - name: PriceFeed
     kind: ethereum/contract
-    network: mainnet
+    network: testnet
     source:
       abi: PriceFeed
       address: "0x46025a89d6F1BFfD1C0Ae9E98e39725e54A11e60"
@@ -95,7 +95,7 @@ dataSources:
 
   - name: StabilityPool
     kind: ethereum/contract
-    network: mainnet
+    network: testnet
     source:
       abi: StabilityPool
       address: "0x0DcedF5e080ED1D58B27b030d042D60971408D26"
@@ -128,7 +128,7 @@ dataSources:
 
   - name: CollSurplusPool
     kind: ethereum/contract
-    network: mainnet
+    network: testnet
     source:
       abi: CollSurplusPool
       address: "0xAC0Bcbf50f27a60647109A229c4409E1369350C3"
@@ -154,7 +154,7 @@ dataSources:
 
   - name: ZUSDToken
     kind: ethereum/contract
-    network: mainnet
+    network: testnet
     source:
       abi: ERC20
       address: "0x71A2D1f9611eA45181aee147A84673f355894D70"
@@ -180,7 +180,7 @@ dataSources:
 
   - kind: ethereum/contract
     name: ActivePool
-    network: mainnet
+    network: testnet
     source:
       address: '0x4AaffD5a31dEe60c1a07fCf93a012666310A155a'
       abi: ActivePool

@@ -5,13 +5,11 @@ import {
   calculateStabilityPoolProfit,
   StabilityPoolProfitComponent,
 } from "../entities/Revenue";
+import { stabilityPoolAddress } from "../config/contracts";
 
 export function handleEtherSent(event: EtherSentEvent): void {
   /** TODO: Don't hardcode this */
-  if (
-    event.params._to.toHexString() ==
-    "0x0dcedf5e080ed1d58b27b030d042d60971408d26" //Stability Pool address
-  ) {
+  if (event.params._to.toHexString() == stabilityPoolAddress.toLowerCase()) {
     /** Update stability pool profit */
     const profit = calculateStabilityPoolProfit(
       StabilityPoolProfitComponent.RbtcCollateral,

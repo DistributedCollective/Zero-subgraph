@@ -8,3 +8,5 @@ npx mustache config/RSK.testnet.json subgraph.template.yaml > subgraph.yaml;
 echo "File: ${green}subgraph.yaml${reset} has been mustached";
 npx mustache config/RSK.testnet.json docker-compose.template.yml > docker-compose.yml;
 echo "File: ${green}docker-compose.yml${reset} has been mustached";
+npx mustache config/RSK.testnet.json src/config/contracts.template.ts > src/config/contracts.ts;
+echo "File: ${green}src/config/contracts.ts${reset} has been mustached";
