@@ -71,5 +71,5 @@ build/
 data/
 bin/
 
-subgraph.yml
+subgraph.yaml
 docker-compose.yml
