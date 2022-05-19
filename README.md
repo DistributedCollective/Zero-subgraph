@@ -15,5 +15,6 @@ To run locally:
 6. Run `npm run create-local`
 7. Run `npm run deploy-local`
 
+# Gotchas
 
-
+- In this version of AssemblyScript, ``===`` does not behave as it does in JS/TS. ``===`` compares references, not equality. Use ``==`` for comparing equality, especially for strings: https://github.com/AssemblyScript/assemblyscript/issues/621

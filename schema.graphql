@@ -15,9 +15,17 @@ type Global @entity {
   totalNumberOfTroves: Int!
 
   "Total amount of ZUSD paid as borrowing fees"
-  totalBorrowingFeesPaid: BigDecimal!
-  "Total amount of ETH paid as redemption fees"
-  totalRedemptionFeesPaid: BigDecimal!
+  totalBorrowingFeesPaidZUSD: BigDecimal!
+  "Total amount of RBTC paid as redemption fees"
+  totalRedemptionFeesPaidRBTC: BigDecimal!
+  "Total amount of ZUSD paid as borrowing fees converted to RBTC"
+  totalBorrowingFeesPaidRBTC: BigDecimal!
+  "Total amount of RBTC paid as redemption fees converted to ZUSD"
+  totalRedemptionFeesPaidZUSD: BigDecimal!
+
+  totalStabilityPoolProfits: BigDecimal!
+  totalLiquidationCompensation: BigDecimal!
+  totalLiquidationVolume: BigDecimal!
 
   "Total redistributed per-stake collateral"
   rawTotalRedistributedCollateral: BigInt!
@@ -25,6 +33,7 @@ type Global @entity {
   "Total redistributed per-stake debt"
   rawTotalRedistributedDebt: BigInt!
 
+  # currentActivePool: ActivePool
   currentSystemState: SystemState
 
   "Only used internally as temporary storage. Will always be null in queries"
@@ -82,7 +91,7 @@ enum TroveStatus {
 }
 
 type Trove @entity {
-  "Owner's ID + '-' + an incremented integer"
+  "Owner's ID"
   id: ID!
 
   owner: User!
@@ -115,7 +124,7 @@ type StabilityDeposit @entity {
 
   depositedAmount: BigDecimal!
 
-  frontend: Frontend
+  # frontend: Frontend
 
   changes: [StabilityDepositChange!]! @derivedFrom(field: "stabilityDeposit")
 }
@@ -249,6 +258,15 @@ type Redemption @entity {
   troveChanges: [TroveChange!]! @derivedFrom(field: "redemption")
 }
 
+# This event is here for debugging purposes only
+type RedemptionRaw @entity {
+  id: ID!
+  _attemptedZUSDAmount: BigInt!
+  _actualZUSDAmount: BigInt!
+  _RBTCSent: BigInt!
+  _RBTCFee: BigInt!
+}
+
 type CollSurplusChange implements Change @entity {
   id: ID!
   sequenceNumber: Int!
@@ -287,9 +305,55 @@ type TokenAllowance @entity {
   value: BigInt!
 }
 
-type Frontend @entity {
-  id: ID!
-  owner: User!
-  kickbackRate: BigDecimal!
-  deposits: [StabilityDeposit!]! @derivedFrom(field: "frontend")
+# type Frontend @entity {
+#   id: ID!
+#   owner: User!
+#   kickbackRate: BigDecimal!
+#   deposits: [StabilityDeposit!]! @derivedFrom(field: "frontend")
+# }
+
+type RevenueDaily @entity {
+  id: ID! # Unix timestamp as string
+  borrowFeeZUSD: BigDecimal!
+  redemptionFeeZUSD: BigDecimal!
+  borrowFeeRBTC: BigDecimal!
+  redemptionFeeRBTC: BigDecimal!
+  """
+  Stability Pool profit is the sum of profits accrued to the SP in the given time period; 
+  each profit event is calculated at the time of each liquidation transaction as: 
+  amount of RBTC collateral sent to the SP at the time of the liquidation - (amount of ZUSD taken from the SP to service the liquidation / USD price of RBTC at the time of the liquidation)
+  """
+  stabilityPoolProfit: BigDecimal!
+  """
+  Liquidation volume is the total amount of RBTC collateral liquidated in the given time period. 
+  """
+  liquidationVolume: BigDecimal!
+  """
+  The liquidation compensation is equal to 0.5% of the RBTC collateral liquidated in a given time period.
+  """
+  liquidationCompensation: BigDecimal!
+  periodStartUnix: BigInt!
+}
+
+type RevenueWeekly @entity {
+  id: ID! # Unix timestamp as string
+  borrowFeeZUSD: BigDecimal!
+  redemptionFeeZUSD: BigDecimal!
+  borrowFeeRBTC: BigDecimal!
+  redemptionFeeRBTC: BigDecimal!
+  """
+  Stability Pool profit is the sum of profits accrued to the SP in the given time period; 
+  each profit event is calculated at the time of each liquidation transaction as: 
+  (USD price of RBTC at the time of the liquidation / amount of RBTC collateral sent to the SP at the time of the liquidation) - (amount of ZUSD taken from the SP to service the liquidation / USD price of RBTC at the time of the liquidation)
+  """
+  stabilityPoolProfit: BigDecimal!
+  """
+  Liquidation volume is the total amount of RBTC collateral liquidated in the given time period. 
+  """
+  liquidationVolume: BigDecimal!
+  """
+  The liquidation compensation is equal to 0.5% of the RBTC collateral liquidated in a given time period.
+  """
+  liquidationCompensation: BigDecimal!
+  periodStartUnix: BigInt!
 }

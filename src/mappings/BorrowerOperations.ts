@@ -9,7 +9,8 @@ import {
   setBorrowingFeeOfLastTroveChange,
   updateTrove,
 } from "../entities/Trove";
-import { increaseTotalBorrowingFeesPaid } from "../entities/Global";
+import { IUpdateRevenues, updateBorrowFee } from "../entities/Revenue";
+import { decimalize } from "../utils/bignumbers";
 
 export function handleTroveUpdated(event: TroveUpdated): void {
   updateTrove(
@@ -24,5 +25,8 @@ export function handleTroveUpdated(event: TroveUpdated): void {
 
 export function handleZUSDBorrowingFeePaid(event: ZUSDBorrowingFeePaid): void {
   setBorrowingFeeOfLastTroveChange(event.params._ZUSDFee);
-  increaseTotalBorrowingFeesPaid(event.params._ZUSDFee);
+  let revenueData = new IUpdateRevenues();
+  revenueData.amount = decimalize(event.params._ZUSDFee);
+  revenueData.timestamp = event.block.timestamp;
+  updateBorrowFee(revenueData);
 }

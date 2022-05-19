@@ -70,3 +70,6 @@ generated/
 build/
 data/
 bin/
+
+subgraph.yaml
+docker-compose.yml

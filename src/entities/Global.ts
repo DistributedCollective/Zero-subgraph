@@ -1,8 +1,9 @@
-import { Value, BigInt } from "@graphprotocol/graph-ts";
+import { Value, BigInt, BigDecimal } from "@graphprotocol/graph-ts";
 
 import { Global } from "../../generated/schema";
 
-import { BIGINT_ZERO, DECIMAL_ZERO, decimalize } from "../utils/bignumbers";
+import { BIGINT_ZERO, DECIMAL_ZERO } from "../utils/bignumbers";
+import { getCurrentPrice } from "./SystemState";
 
 const onlyGlobalId = "only";
 
@@ -26,19 +27,25 @@ export function getGlobal(): Global {
     newGlobal.totalNumberOfTroves = 0;
     newGlobal.rawTotalRedistributedCollateral = BIGINT_ZERO;
     newGlobal.rawTotalRedistributedDebt = BIGINT_ZERO;
-    newGlobal.totalBorrowingFeesPaid = DECIMAL_ZERO;
-    newGlobal.totalRedemptionFeesPaid = DECIMAL_ZERO;
+    newGlobal.totalBorrowingFeesPaidZUSD = DECIMAL_ZERO;
+    newGlobal.totalBorrowingFeesPaidRBTC = DECIMAL_ZERO;
+    newGlobal.totalRedemptionFeesPaidRBTC = DECIMAL_ZERO;
+    newGlobal.totalRedemptionFeesPaidZUSD = DECIMAL_ZERO;
+    newGlobal.totalStabilityPoolProfits = DECIMAL_ZERO;
+    newGlobal.totalLiquidationCompensation = DECIMAL_ZERO;
+    newGlobal.totalLiquidationVolume = DECIMAL_ZERO;
 
     return newGlobal;
   }
 }
 
 function increaseCounter(key: string): i32 {
-  const global = Global.load("only");
+  let global = getGlobal();
 
-  if (global != null) {
-    const count = global.changeCount;
-    global.changeCount = global.changeCount + 1;
+  const countStr = global.get(key);
+  if (countStr !== null) {
+    const count = countStr.toI32();
+    global.set(key, Value.fromI32(count + 1));
     global.save();
     return count;
   } else {
@@ -139,10 +146,57 @@ export function decreaseNumberOfTrovesClosedByOwner(): void {
   global.save();
 }
 
-export function increaseTotalBorrowingFeesPaid(_ZUSDFee: BigInt): void {
+export function increaseTotalBorrowingFeesPaid(
+  _ZUSDFee: BigDecimal,
+  _ZUSDFeeInRbtc: BigDecimal
+): void {
   let global = getGlobal();
-  global.totalBorrowingFeesPaid = global.totalBorrowingFeesPaid.plus(
-    decimalize(_ZUSDFee)
-  );
+  global.totalBorrowingFeesPaidZUSD =
+    global.totalBorrowingFeesPaidZUSD.plus(_ZUSDFee);
+  global.totalBorrowingFeesPaidRBTC =
+    global.totalBorrowingFeesPaidRBTC.plus(_ZUSDFeeInRbtc);
+  global.save();
+}
+
+export function increaseTotalRedemptionFeesPaid(
+  _RBTCFee: BigDecimal,
+  _RBTCFeeInZusd: BigDecimal
+): void {
+  let global = getGlobal();
+  global.totalRedemptionFeesPaidRBTC =
+    global.totalRedemptionFeesPaidRBTC.plus(_RBTCFee);
+  global.totalRedemptionFeesPaidZUSD =
+    global.totalBorrowingFeesPaidZUSD.plus(_RBTCFeeInZusd);
+  global.save();
+}
+
+export function increaseTotalStabilityPoolProfits(profit: BigDecimal): void {
+  let global = getGlobal();
+  global.totalStabilityPoolProfits =
+    global.totalStabilityPoolProfits.plus(profit);
+  global.save();
+}
+
+export function decreaseTotalStabilityPoolProfits(
+  profitChange: BigDecimal
+): void {
+  let global = getGlobal();
+  global.totalStabilityPoolProfits =
+    global.totalStabilityPoolProfits.minus(profitChange);
+  global.save();
+}
+
+export function increaseTotalLiquidationCompensation(
+  collateralGasCompensation: BigDecimal
+): void {
+  let global = getGlobal();
+  global.totalLiquidationCompensation =
+    global.totalLiquidationCompensation.plus(collateralGasCompensation);
+  global.save();
+}
+
+export function increaseTotalLiquidationVolume(volume: BigDecimal): void {
+  let global = getGlobal();
+  global.totalLiquidationVolume = global.totalLiquidationVolume.plus(volume);
   global.save();
 }
