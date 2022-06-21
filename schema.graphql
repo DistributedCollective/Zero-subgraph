@@ -357,3 +357,20 @@ type RevenueWeekly @entity {
   liquidationCompensation: BigDecimal!
   periodStartUnix: BigInt!
 }
+
+type TransferTransaction @entity {
+  id: ID! # transaction
+  user: User!
+  transfers: [TransferItem!] @derivedFrom(field: "transferTransaction")
+  timestamp: Int!
+  transaction: Transaction!
+}
+
+type TransferItem @entity {
+  id: ID! # transaction + log-index
+  from: String!
+  to: String!
+  amount: BigDecimal!
+  transferTransaction: TransferTransaction!
+  logIndex: Int!
+}
