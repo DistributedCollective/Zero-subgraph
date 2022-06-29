@@ -2,7 +2,7 @@
     "network": "mainnet",
     "node": {
         "network": "mainnet",
-        "address": "http://3.139.194.230:4444/",
+        "address": "https://rsk-graph1.sovryn.app/rpc",
         "log_level": "debug"
     },
     "ActivePool": {
