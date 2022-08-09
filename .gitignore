@@ -73,3 +73,4 @@ bin/
 
 subgraph.yaml
 docker-compose.yml
+.env.dev

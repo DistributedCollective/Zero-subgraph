@@ -20,8 +20,7 @@
     "prepare:RSK:testnet": "sh ./scripts/prepare_testnet.sh",
     "prepare:RSK:mainnet": "sh ./scripts/prepare_mainnet.sh",
     "test-start-block": "node -r esm utils/startFromLaterBlock.js",
-    "build-tests": "sudo docker build -t matchstick .",
-    "run-tests": "docker run --rm matchstick"
+    "dev:up": "docker compose --env-file .env.dev up -d"
   },
   "devDependencies": {
     "@graphprotocol/graph-cli": "^0.25.3",
