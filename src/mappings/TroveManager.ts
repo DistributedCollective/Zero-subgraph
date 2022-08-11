@@ -82,13 +82,11 @@ export function handleRedemption(event: Redemption): void {
     event.params._RBTCFee
   );
 
-  // let revenueData = new IUpdateRevenues();
-  // revenueData.amount = decimalize(event.params._RBTCFee);
-  // revenueData.timestamp = event.block.timestamp;
-  updateRedemptionFee({
-    amount: BigDecimal.fromString("1"),
-    timestamp: event.block.timestamp,
-  });
+  let revenueData = new IUpdateRevenues();
+  revenueData.amount = decimalize(event.params._RBTCFee);
+  revenueData.timestamp = event.block.timestamp;
+
+  updateRedemptionFee(revenueData);
 }
 
 export function handleLTermsUpdated(event: LTermsUpdated): void {
