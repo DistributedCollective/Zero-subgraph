@@ -1,31 +1,35 @@
 # Zero Subgraph
 
-Subgraph for the Zero protocol
+
+![Tests](https://github.com/DistributedCollective/zero/actions/workflows/test-contracts.yml/badge.svg)
+
+Zero is a decentralized protocol based on [Liquity](https://github.com/liquity/dev) that allows RBTC holders to obtain maximum liquidity against their collateral without paying interest. After locking up RBTC as collateral in a smart contract and creating an individual position called a "Line of Credit" aka "Trove", the user can get instant liquidity by minting ZUSD, a USD-pegged stablecoin. Each Line of Credit is required to be collateralized at a minimum collateral ratio of 110%. Any owner of ZUSD can redeem their stablecoins for the underlying collateral at any time. The redemption mechanism and algorithmically adjusted fees guarantee a minimum stablecoin value of 1 USD.
+
+An unprecedented liquidation mechanism based on incentivized stability pool deposits and a redistribution cycle from riskier to safer Lines of Credit provides stability at a much lower collateral ratio than current systems. Stability is maintained via economically-driven user interactions and arbitrage rather than by active governance or monetary interventions.
+
+The Zero Subgraph is a fork of the Liquity subgraph.
+
+Please note that this is still an early version of the subgraph. While it has undergone testing, we are aware there may be some bugs. If you wish to report a bug, please contact us on discord through the [tech-support](https://discord.com/channels/729675474665603133/813119624098611260) or [user-feedback](https://discord.com/channels/729675474665603133/750376232771780608) channels to let us know.
+
+For more information on The Graph protocol, head to the Graph documentation here: https://thegraph.com/docs/.
 
 
-# Development quickstart
+# Development
 
 To run locally:
 
-1. Clone this repository
-2. Run `npm install`
-3. Run `npm run codegen`
-4. Start Graph Node docker instance: `docker-compose up -d`
-5. Run `npm run build`
-6. Run `npm run create-local`
-7. Run `npm run deploy-local`
+- clone repo
+- Run `npm install`
+- Add a `.env.dev` file in the root of the project. Copy the contents of `.env.example` into this file (you can change the password to your own password if you wish)
+- Run `npm run prepare:RSK:testnet`. This will create the docker-compose.yml file and the subgraph.yaml file from the template files.
+- Run `npm run dev:up`. This will run docker compose up -d and pass in your environment file.
+- Run `npm run codegen`. This will generate the ./generated folder with types and contract objects.
+- Run `npm run build` to generate the build folder
+- Run `npm run create-local` to start running the graph node locally
+- Run `npm run deploy-local` to deploy the contents of the build folder locally
+- Go to http://localhost:8000/subgraphs/name/DistributedCollective/sovryn-subgraph/graphql to see the iGraphQL GUI for your local subgraph
 
-## Deploy Subgraph to locally hosted service
+## Useful info
 
-1. Add a tag with command git tag [ TAG_NAME ] . The tag should be consistent with the graph versioning
-2. Run git push origin [ TAG_NAME ]
-3. Go to Jenkins site: 172.20.2.229:8080
-4. Select create-graphql-cluster and build with parameters
-5. Log in to aws console to check that new cluster is up
-6. Get GraphiQL url from aws console and add to Postman in subgraph sync environment
-7. When the new subgraph has synced, we need to change the dns to new subgraph: switching DNS name to new ELB: http://172.20.2.229:8080/job/change-dns-entry-graphql/. Use dns name for new subgraph from aws console as parameter for jenkins.
-8. Check that dns has switched over successfully: "prod" address: https://graphql.sovryn.app/subgraphs/name/DistributedCollective/Sovryn-subgraph/graphql
-
-# Gotchas
-
-- In this version of AssemblyScript, ``===`` does not behave as it does in JS/TS. ``===`` compares references, not equality. Use ``==`` for comparing equality, especially for strings: https://github.com/AssemblyScript/assemblyscript/issues/621
+- The subgraph mappings files are written in AssemblyScript, not Typescript. AssemblyScript docs can be found here: https://www.assemblyscript.org/. Pay particular attention to the difference in the equality operator - `===` compares referencess, `==` compares values.
+- If you are having issues with postgres, try deleting the `data/` directory from the subgraph root
