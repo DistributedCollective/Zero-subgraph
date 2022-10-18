@@ -20,7 +20,8 @@
     "prepare:RSK:testnet": "sh ./scripts/prepare_testnet.sh",
     "prepare:RSK:mainnet": "sh ./scripts/prepare_mainnet.sh",
     "test-start-block": "node -r esm utils/startFromLaterBlock.js",
-    "dev:up": "docker compose --env-file .env.dev up -d"
+    "dev:up": "docker compose --env-file .env.dev up -d",
+    "dev:down": "docker compose --env-file .env.dev down"
   },
   "devDependencies": {
     "@graphprotocol/graph-cli": "^0.25.3",
