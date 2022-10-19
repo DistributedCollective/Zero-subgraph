@@ -15,7 +15,7 @@ export function getCurrentRedemption(event: ethereum.Event): Redemption {
     currentRedemptionId === null ? "" : currentRedemptionId
   );
 
-  if (currentRedemptionOrNull == null) {
+  if (currentRedemptionOrNull === null) {
     let sequenceNumber = getRedemptionSequenceNumber();
     let newRedemption = new Redemption(sequenceNumber.toString());
 
@@ -28,13 +28,12 @@ export function getCurrentRedemption(event: ethereum.Event): Redemption {
     newRedemption.partial = false;
     newRedemption.fee = DECIMAL_ZERO;
     newRedemption.save();
-
-    let global = getGlobal();
-    global.currentRedemption = newRedemption.id;
-    global.save();
-
     currentRedemptionOrNull = newRedemption;
   }
+
+  let global = getGlobal();
+  global.currentRedemption = currentRedemptionOrNull.id;
+  global.save();
 
   return currentRedemptionOrNull as Redemption;
 }
@@ -55,4 +54,10 @@ export function finishCurrentRedemption(
   currentRedemption.partial = _actualZUSDAmount < _attemptedZUSDAmount;
   currentRedemption.fee = fee;
   currentRedemption.save();
+
+  let global = getGlobal();
+  global.currentRedemption = null;
+  global.totalRedemptionFeesPaidRBTC =
+    global.totalRedemptionFeesPaidRBTC.plus(fee);
+  global.save();
 }
