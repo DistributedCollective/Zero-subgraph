@@ -57,5 +57,7 @@ export function finishCurrentRedemption(
 
   let global = getGlobal();
   global.currentRedemption = null;
+  global.totalRedemptionFeesPaidRBTC =
+    global.totalRedemptionFeesPaidRBTC.plus(fee);
   global.save();
 }
