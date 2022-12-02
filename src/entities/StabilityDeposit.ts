@@ -1,8 +1,14 @@
-import { ethereum, Address, BigInt, BigDecimal } from "@graphprotocol/graph-ts";
+import {
+  ethereum,
+  Address,
+  BigInt,
+  BigDecimal,
+  log
+} from "@graphprotocol/graph-ts";
 
 import {
   StabilityDepositChange,
-  StabilityDeposit,
+  StabilityDeposit
 } from "../../generated/schema";
 
 import { decimalize, DECIMAL_ZERO, BIGINT_ZERO } from "../utils/bignumbers";
@@ -57,7 +63,7 @@ function updateStabilityDepositByOperation(
   collateralGain: BigDecimal | null = null
 ): void {
   let stabilityDepositChange = createStabilityDepositChange(event);
-
+  log.debug("DEBUGGING 2.... {}", [newDepositedAmount.toString()]);
   stabilityDepositChange.stabilityDeposit = stabilityDeposit.id;
   stabilityDepositChange.stabilityDepositOperation = operation;
   stabilityDepositChange.depositedAmountBefore =
@@ -76,6 +82,8 @@ function updateStabilityDepositByOperation(
     stabilityDepositChange.collateralGain = collateralGain;
   }
 
+  stabilityDeposit.save();
+  stabilityDepositChange.save();
   updateSystemStateByStabilityDepositChange(stabilityDepositChange);
   finishStabilityDepositChange(stabilityDepositChange);
 }
@@ -87,19 +95,11 @@ export function updateStabilityDeposit(
 ): void {
   let stabilityDeposit = getStabilityDeposit(_user);
   let newDepositedAmount = decimalize(_amount);
-  let owner = getUser(_user);
-
   if (newDepositedAmount == stabilityDeposit.depositedAmount) {
     // Don't create a StabilityDepositChange when there's no change... duh.
     // It means user only wanted to withdraw collateral gains.
     return;
   }
-
-  // if (owner.frontend != stabilityDeposit.frontend) {
-  //   // FrontEndTagSet is emitted just before UserDepositChanged event
-  //   // FrontEndTagSet sets the owner.frontend, so we can use that
-  //   stabilityDeposit.frontend = owner.frontend;
-  // }
 
   updateStabilityDepositByOperation(
     event,
