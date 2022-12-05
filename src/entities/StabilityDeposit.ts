@@ -8,8 +8,7 @@ import {
 
 import {
   StabilityDepositChange,
-  StabilityDeposit,
-  Debug
+  StabilityDeposit
 } from "../../generated/schema";
 
 import { decimalize, DECIMAL_ZERO, BIGINT_ZERO } from "../utils/bignumbers";
@@ -79,20 +78,6 @@ function updateStabilityDepositByOperation(
       stabilityDepositChange.depositedAmountBefore
     );
 
-  const debug = new Debug(
-    event.transaction.index.toHexString() +
-      "_" +
-      event.transaction.hash.toHexString() +
-      "_" +
-      event.logIndex.toString() +
-      "updateByOperation"
-  );
-  debug.block = event.block.number.toI32();
-  debug.debugValue = newDepositedAmount.toString();
-  debug.debugValueDescription =
-    "New Deposit Amount, StabilityDeposit.ts line 75";
-  debug.save();
-
   if (collateralGain !== null) {
     stabilityDepositChange.collateralGain = collateralGain;
   }
@@ -115,19 +100,6 @@ export function updateStabilityDeposit(
     // It means user only wanted to withdraw collateral gains.
     return;
   }
-
-  const debug = new Debug(
-    event.transaction.index.toHexString() +
-      "_" +
-      event.transaction.hash.toHexString() +
-      "_" +
-      event.logIndex.toString() +
-      "_updatedStabilityDeposit"
-  );
-  debug.block = event.block.number.toI32();
-  debug.debugValue = stabilityDeposit.depositedAmount.toString();
-  debug.debugValueDescription = "stabilityDeposit.depositedAmount";
-  debug.save();
 
   updateStabilityDepositByOperation(
     event,

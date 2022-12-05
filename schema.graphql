@@ -363,10 +363,3 @@ type RevenueWeekly @entity {
   liquidationCompensation: BigDecimal!
   periodStartUnix: BigInt!
 }
-
-type Debug @entity {
-  id: ID! # txHash + log index
-  block: Int!
-  debugValue: String!
-  debugValueDescription: String!
-}

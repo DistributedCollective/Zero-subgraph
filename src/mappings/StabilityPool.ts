@@ -1,4 +1,4 @@
-import { BigDecimal, BigInt, log } from "@graphprotocol/graph-ts";
+import { BigInt } from "@graphprotocol/graph-ts";
 
 import {
   UserDepositChanged,
@@ -6,16 +6,14 @@ import {
   RBTCGainWithdrawn
 } from "../../generated/StabilityPool/StabilityPool";
 
-import { BIGINT_ZERO, decimalize } from "../utils/bignumbers";
-
-import { getGlobal } from "../entities/Global";
+import { BIGINT_ZERO } from "../utils/bignumbers";
 
 import {
   updateStabilityDeposit,
   withdrawCollateralGainFromStabilityDeposit
 } from "../entities/StabilityDeposit";
 
-import { Debug, TempDepositUpdate } from "../../generated/schema";
+import { TempDepositUpdate } from "../../generated/schema";
 // Read the value of tmpDepositUpdate from the Global entity, and replace it with:
 //  - null, if it wasn't null
 //  - valueToSetIfNull if it was null
@@ -25,13 +23,6 @@ function swapTmpDepositUpdate(
   valueToSetIfNull: BigInt,
   txHash: string
 ): BigInt | null {
-  // let global = getGlobal();
-
-  // let tmpDepositUpdate = global.tmpDepositUpdate;
-  // global.tmpDepositUpdate = tmpDepositUpdate === null ? valueToSetIfNull : null;
-  // global.save();
-
-  // return tmpDepositUpdate;
   let tmpDepositEntity = TempDepositUpdate.load(txHash);
   if (tmpDepositEntity != null) {
     const amount = tmpDepositEntity.amount;
@@ -52,19 +43,6 @@ export function handleUserDepositChanged(event: UserDepositChanged): void {
     event.transaction.hash.toHexString()
   );
   if (ethGainWithdrawn !== null) {
-    const debug = new Debug(
-      event.transaction.index.toHexString() +
-        "_" +
-        event.transaction.hash.toHexString() +
-        "_" +
-        event.logIndex.toString() +
-        "_handleUserDepositChanged"
-    );
-    debug.block = event.block.number.toI32();
-    debug.debugValue = event.params._newDeposit.toString();
-    debug.debugValueDescription = "handleUserDepositChanged";
-    debug.save();
-
     updateStabilityDeposit(
       event,
       event.params._depositor,
@@ -89,18 +67,6 @@ export function handleETHGainWithdrawn(event: ETHGainWithdrawn): void {
   );
 
   if (depositUpdate !== null) {
-    const debug = new Debug(
-      event.transaction.index.toHexString() +
-        "_" +
-        event.transaction.hash.toHexString() +
-        "_" +
-        event.logIndex.toString() +
-        "_handleEthGainWithdrawn"
-    );
-    debug.block = event.block.number.toI32();
-    debug.debugValue = depositUpdate.toString();
-    debug.debugValueDescription = "handleETHGainWithdrawn()";
-    debug.save();
     updateStabilityDeposit(
       event,
       event.params._depositor,
@@ -125,18 +91,6 @@ export function handleRBTCGainWithdrawn(event: RBTCGainWithdrawn): void {
   );
 
   if (depositUpdate !== null) {
-    const debug = new Debug(
-      event.transaction.index.toHexString() +
-        "_" +
-        event.transaction.hash.toHexString() +
-        "_" +
-        event.logIndex.toString() +
-        "_handleRBTCGainWithdrawn"
-    );
-    debug.block = event.block.number.toI32();
-    debug.debugValue = depositUpdate.toString();
-    debug.debugValueDescription = "handleRBTCGainWithdrawn()";
-    debug.save();
     updateStabilityDeposit(
       event,
       event.params._depositor,
