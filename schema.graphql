@@ -46,6 +46,12 @@ type Global @entity {
   tmpDepositUpdate: BigInt
 }
 
+type TempDepositUpdate @entity {
+  "ID is transaction hash"
+  id: ID!
+  amount: BigInt
+}
+
 type SystemState @entity {
   "Sequence number as an ID (string)"
   id: ID!
@@ -356,4 +362,11 @@ type RevenueWeekly @entity {
   """
   liquidationCompensation: BigDecimal!
   periodStartUnix: BigInt!
+}
+
+type Debug @entity {
+  id: ID! # txHash + log index
+  block: Int!
+  debugValue: String!
+  debugValueDescription: String!
 }
