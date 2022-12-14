@@ -8,7 +8,11 @@ export function beginChange(): i32 {
   return getChangeSequenceNumber();
 }
 
-export function initChange(change: Entity, event: ethereum.Event, sequenceNumber: i32): void {
+export function initChange(
+  change: Entity,
+  event: ethereum.Event,
+  sequenceNumber: i32
+): void {
   let transactionId = getTransaction(event).id;
   let systemStateBeforeId = getCurrentSystemState().id;
 
@@ -19,6 +23,5 @@ export function initChange(change: Entity, event: ethereum.Event, sequenceNumber
 
 export function finishChange(change: Entity): void {
   let systemStateAfterId = getCurrentSystemState().id;
-
   change.set("systemStateAfter", Value.fromString(systemStateAfterId));
 }

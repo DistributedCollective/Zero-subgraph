@@ -1,38 +1,47 @@
-import { BigDecimal, BigInt } from "@graphprotocol/graph-ts";
+import { BigInt } from "@graphprotocol/graph-ts";
 
 import {
   UserDepositChanged,
-  RBTCGainWithdrawn,
+  ETHGainWithdrawn,
+  RBTCGainWithdrawn
 } from "../../generated/StabilityPool/StabilityPool";
 
-import { BIGINT_ZERO, decimalize } from "../utils/bignumbers";
-
-import { getGlobal } from "../entities/Global";
+import { BIGINT_ZERO } from "../utils/bignumbers";
 
 import {
   updateStabilityDeposit,
-  withdrawCollateralGainFromStabilityDeposit,
+  withdrawCollateralGainFromStabilityDeposit
 } from "../entities/StabilityDeposit";
-import { getCurrentPrice } from "../entities/SystemState";
 
+import { TempDepositUpdate } from "../../generated/schema";
 // Read the value of tmpDepositUpdate from the Global entity, and replace it with:
 //  - null, if it wasn't null
 //  - valueToSetIfNull if it was null
 //
 // Returns the value of tmpDepositUpdate before the swap.
-function swapTmpDepositUpdate(valueToSetIfNull: BigInt): BigInt | null {
-  let global = getGlobal();
-
-  let tmpDepositUpdate = global.tmpDepositUpdate;
-  global.tmpDepositUpdate = tmpDepositUpdate === null ? valueToSetIfNull : null;
-  global.save();
-
-  return tmpDepositUpdate;
+function swapTmpDepositUpdate(
+  valueToSetIfNull: BigInt,
+  txHash: string
+): BigInt | null {
+  let tmpDepositEntity = TempDepositUpdate.load(txHash);
+  if (tmpDepositEntity != null) {
+    const amount = tmpDepositEntity.amount;
+    tmpDepositEntity.amount = null;
+    tmpDepositEntity.save();
+    return amount;
+  } else {
+    tmpDepositEntity = new TempDepositUpdate(txHash);
+    tmpDepositEntity.amount = valueToSetIfNull;
+    tmpDepositEntity.save();
+    return null;
+  }
 }
 
 export function handleUserDepositChanged(event: UserDepositChanged): void {
-  let ethGainWithdrawn = swapTmpDepositUpdate(event.params._newDeposit);
-
+  let ethGainWithdrawn = swapTmpDepositUpdate(
+    event.params._newDeposit,
+    event.transaction.hash.toHexString()
+  );
   if (ethGainWithdrawn !== null) {
     updateStabilityDeposit(
       event,
@@ -42,10 +51,37 @@ export function handleUserDepositChanged(event: UserDepositChanged): void {
   }
 }
 
-export function handleETHGainWithdrawn(event: RBTCGainWithdrawn): void {
+export function handleETHGainWithdrawn(event: ETHGainWithdrawn): void {
   // Leave a non-null dummy value to signal to handleUserDepositChanged()
   // that ETH gains have been withdrawn
-  let depositUpdate = swapTmpDepositUpdate(BIGINT_ZERO);
+  let depositUpdate = swapTmpDepositUpdate(
+    BIGINT_ZERO,
+    event.transaction.hash.toHexString()
+  );
+
+  withdrawCollateralGainFromStabilityDeposit(
+    event,
+    event.params._depositor,
+    event.params._ETH,
+    event.params._ZUSDLoss
+  );
+
+  if (depositUpdate !== null) {
+    updateStabilityDeposit(
+      event,
+      event.params._depositor,
+      depositUpdate as BigInt
+    );
+  }
+}
+
+export function handleRBTCGainWithdrawn(event: RBTCGainWithdrawn): void {
+  // Leave a non-null dummy value to signal to handleUserDepositChanged()
+  // that ETH gains have been withdrawn
+  let depositUpdate = swapTmpDepositUpdate(
+    BIGINT_ZERO,
+    event.transaction.hash.toHexString()
+  );
 
   withdrawCollateralGainFromStabilityDeposit(
     event,

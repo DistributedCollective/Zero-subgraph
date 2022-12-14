@@ -120,6 +120,8 @@ dataSources:
         - event: UserDepositChanged(indexed address,uint256)
           handler: handleUserDepositChanged
         - event: RBTCGainWithdrawn(indexed address,uint256,uint256)
+          handler: handleRBTCGainWithdrawn
+        - event: ETHGainWithdrawn(indexed address,uint256,uint256)
           handler: handleETHGainWithdrawn
         # - event: FrontEndRegistered(indexed address,uint256)
         #   handler: handleFrontendRegistered
