@@ -43,7 +43,6 @@ dataSources:
           receipt: true
         - event: LTermsUpdated(uint256,uint256)
           handler: handleLTermsUpdated
-          receipt: true
 
   - name: BorrowerOperations
     kind: ethereum/contract
@@ -73,7 +72,6 @@ dataSources:
           receipt: true
         - event: ZUSDBorrowingFeePaid(indexed address,uint256)
           handler: handleZUSDBorrowingFeePaid
-          receipt: true
 
   - name: PriceFeed
     kind: ethereum/contract
@@ -98,7 +96,6 @@ dataSources:
       eventHandlers:
         - event: LastGoodPriceUpdated(uint256)
           handler: handleLastGoodPriceUpdated
-          receipt: true
 
   - name: StabilityPool
     kind: ethereum/contract
@@ -191,7 +188,6 @@ dataSources:
           receipt: true
         - event: Approval(indexed address,indexed address,uint256)
           handler: handleTokenApproval
-          receipt: true 
 
   - kind: ethereum/contract
     name: ActivePool
