@@ -6,7 +6,7 @@ import {
   decimalize,
   BIGINT_SCALING_FACTOR,
   BIGINT_ZERO,
-  DECIMAL_ZERO,
+  DECIMAL_ZERO
 } from "../utils/bignumbers";
 import { calculateCollateralRatio } from "../utils/collateralRatio";
 
@@ -21,7 +21,7 @@ import {
   increaseNumberOfOpenTroves,
   increaseNumberOfTrovesClosedByOwner,
   getLastChangeSequenceNumber,
-  getGlobal,
+  getGlobal
 } from "./Global";
 import { beginChange, initChange, finishChange } from "./Change";
 import { getCurrentPrice, updateSystemStateByTroveChange } from "./SystemState";
@@ -190,7 +190,7 @@ export function setBorrowingFeeOfLastTroveChange(_ZUSDFee: BigInt): void {
   let lastChangeSequenceNumber = getLastChangeSequenceNumber();
 
   let lastTroveChange = TroveChange.load(lastChangeSequenceNumber.toString());
-  if (lastTroveChange !== null) {
+  if (lastTroveChange != null) {
     lastTroveChange.borrowingFee = decimalize(_ZUSDFee);
     lastTroveChange.save();
   }
