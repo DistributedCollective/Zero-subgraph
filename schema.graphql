@@ -143,9 +143,28 @@ type Transaction @entity {
   sequenceNumber: Int!
 
   blockNumber: Int!
-
-  "Timestamp of block that included this transaction (seconds since epoch)"
+  """
+  The timestamp the transaction was confirmed
+  """
   timestamp: Int!
+
+  gasPrice: BigInt!
+  """
+  The index of this transaction within the block
+  """
+  index: Int!
+  """
+  The account that initiated this transaction. This must be an Account and not a Contract.
+  """
+  from: Bytes!
+  """
+  The contract the user interacted with
+  """
+  to: Bytes
+  value: BigInt!
+  gasLimit: BigInt!
+  gasUsed: BigInt
+  functionSignature: String!
 
   changes: [Change!]! @derivedFrom(field: "transaction")
 }
