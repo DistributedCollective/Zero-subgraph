@@ -32,15 +32,15 @@ dataSources:
       eventHandlers:
         - event: TroveUpdated(indexed address,uint256,uint256,uint256,uint8)
           handler: handleTroveUpdated
-          receipt: true
+          #receipt: true
         - event: TroveLiquidated(indexed address,uint256,uint256,uint8)
           handler: handleTroveLiquidated
-          receipt: true
+          #receipt: true
         - event: Liquidation(uint256,uint256,uint256,uint256)
           handler: handleLiquidation
         - event: Redemption(uint256,uint256,uint256,uint256)
           handler: handleRedemption
-          receipt: true
+          #receipt: true
         - event: LTermsUpdated(uint256,uint256)
           handler: handleLTermsUpdated
 
@@ -69,7 +69,7 @@ dataSources:
       eventHandlers:
         - event: TroveUpdated(indexed address,uint256,uint256,uint256,uint8)
           handler: handleTroveUpdated
-          receipt: true
+          #receipt: true
         - event: ZUSDBorrowingFeePaid(indexed address,uint256)
           handler: handleZUSDBorrowingFeePaid
 
@@ -123,17 +123,13 @@ dataSources:
       eventHandlers:
         - event: UserDepositChanged(indexed address,uint256)
           handler: handleUserDepositChanged
-          receipt: true
+          #receipt: true
         - event: RBTCGainWithdrawn(indexed address,uint256,uint256)
           handler: handleRBTCGainWithdrawn
-          receipt: true
+          #receipt: true
         - event: ETHGainWithdrawn(indexed address,uint256,uint256)
           handler: handleETHGainWithdrawn
-          receipt: true
-        # - event: FrontEndRegistered(indexed address,uint256)
-        #   handler: handleFrontendRegistered
-        # - event: FrontEndTagSet(indexed address,indexed address)
-        #   handler: handleFrontendTagSet
+          #receipt: true
 
   - name: CollSurplusPool
     kind: ethereum/contract
@@ -160,7 +156,7 @@ dataSources:
       eventHandlers:
         - event: CollBalanceUpdated(indexed address,uint256)
           handler: handleCollSurplusBalanceUpdated
-          receipt: true
+          #receipt: true
 
   - name: ZUSDToken
     kind: ethereum/contract
@@ -185,7 +181,7 @@ dataSources:
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTokenTransfer
-          receipt: true
+          #receipt: true
         - event: Approval(indexed address,indexed address,uint256)
           handler: handleTokenApproval
 
@@ -218,5 +214,5 @@ dataSources:
       eventHandlers:
         - event: EtherSent(address,uint256)
           handler: handleEtherSent
-          receipt: true
+          #receipt: true
       file: ./src/mappings/ActivePool.ts

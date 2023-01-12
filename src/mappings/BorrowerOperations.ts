@@ -1,5 +1,4 @@
 import {
-  BorrowerOperations,
   TroveUpdated,
   ZUSDBorrowingFeePaid
 } from "../../generated/BorrowerOperations/BorrowerOperations";
@@ -16,11 +15,12 @@ import {
 import { IUpdateRevenues, updateBorrowFee } from "../entities/Revenue";
 import { decimalize } from "../utils/bignumbers";
 import { getTransaction } from "../entities/Transaction";
+import { CallSignatures } from "../utils/constants";
 
 export function handleTroveUpdated(event: TroveUpdated): void {
   const transaction = getTransaction(event);
   const borrowerOperation =
-    transaction.functionSignature == "0xfda0101a"
+    transaction.functionSignature == CallSignatures.withdrawETHGainToTrove
       ? BorrowerOperation.transferGainToLineOfCredit
       : event.params.operation;
   updateTrove(
