@@ -1,7 +1,7 @@
 version: '3'
 services:
   graph-node:
-    image: graphprotocol/graph-node:v0.27.0
+    image: graphprotocol/graph-node:v0.26.0
     ports:
       - '8000:8000'
       - '8001:8001'
@@ -25,6 +25,10 @@ services:
       # Change next line if you want to connect to a different JSON-RPC endpoint
       ethereum: '{{node.network}}:{{& node.address}}'
       GRAPH_LOG: '{{node.log_level}}'
+      GRAPH_GRAPHQL_QUERY_TIMEOUT: '10'
+      GRAPH_SQL_STATEMENT_TIMEOUT: '10'
+      GRAPH_GRAPHQL_MAX_DEPTH: '16'
+      GRAPH_GRAPHQL_MAX_COMPLEXITY: '1500000'
   ipfs:
     image: ipfs/go-ipfs:v0.11.0
     ports:
