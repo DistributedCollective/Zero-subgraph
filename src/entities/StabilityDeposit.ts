@@ -128,10 +128,16 @@ export function withdrawCollateralGainFromStabilityDeposit(
   let depositLoss = decimalize(_ZUSDLoss);
   let newDepositedAmount = stabilityDeposit.depositedAmount.minus(depositLoss);
 
+  const callSig = event.transaction.input.toHexString().slice(0, 10);
+  const operation =
+    callSig == "0xfda0101a"
+      ? "withdrawGainToLineOfCredit"
+      : "withdrawCollateralGain";
+
   updateStabilityDepositByOperation(
     event,
     stabilityDeposit,
-    "withdrawCollateralGain",
+    operation,
     newDepositedAmount,
     decimalize(_ETH)
   );

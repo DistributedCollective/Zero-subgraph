@@ -1,21 +1,31 @@
 import {
+  BorrowerOperations,
   TroveUpdated,
-  ZUSDBorrowingFeePaid,
+  ZUSDBorrowingFeePaid
 } from "../../generated/BorrowerOperations/BorrowerOperations";
 
-import { getTroveOperationFromBorrowerOperation } from "../types/TroveOperation";
+import {
+  BorrowerOperation,
+  getTroveOperationFromBorrowerOperation
+} from "../types/TroveOperation";
 
 import {
   setBorrowingFeeOfLastTroveChange,
-  updateTrove,
+  updateTrove
 } from "../entities/Trove";
 import { IUpdateRevenues, updateBorrowFee } from "../entities/Revenue";
 import { decimalize } from "../utils/bignumbers";
+import { getTransaction } from "../entities/Transaction";
 
 export function handleTroveUpdated(event: TroveUpdated): void {
+  const transaction = getTransaction(event);
+  const borrowerOperation =
+    transaction.functionSignature == "0xfda0101a"
+      ? BorrowerOperation.transferGainToLineOfCredit
+      : event.params.operation;
   updateTrove(
     event,
-    getTroveOperationFromBorrowerOperation(event.params.operation),
+    getTroveOperationFromBorrowerOperation(borrowerOperation),
     event.params._borrower,
     event.params._coll,
     event.params._debt,

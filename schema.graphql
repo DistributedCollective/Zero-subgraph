@@ -187,6 +187,7 @@ enum TroveOperation {
   openTrove
   closeTrove
   adjustTrove
+  transferGainToLineOfCredit
   accrueRewards
   liquidateInNormalMode
   liquidateInRecoveryMode
@@ -224,6 +225,7 @@ enum StabilityDepositOperation {
   depositTokens
   withdrawTokens
   withdrawCollateralGain
+  withdrawGainToLineOfCredit
 }
 
 type StabilityDepositChange implements Change @entity {
