@@ -25,9 +25,9 @@ export function getTransaction(event: ethereum.Event): Transaction {
     newTransaction.to = event.transaction.to;
     newTransaction.value = event.transaction.value;
     newTransaction.gasLimit = event.transaction.gasLimit;
-    if (event.receipt != null) {
-      newTransaction.gasUsed = event.receipt!.gasUsed;
-    }
+    // if (event.receipt !== null) {
+    //   newTransaction.gasUsed = event.receipt!.gasUsed;
+    // }
 
     newTransaction.functionSignature = event.transaction.input
       .toHexString()

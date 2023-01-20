@@ -1,10 +1,13 @@
-enum BorrowerOperation {
+export enum BorrowerOperation {
   openTrove,
   closeTrove,
-  adjustTrove
+  adjustTrove,
+  transferGainToLineOfCredit
 }
 
-export function getTroveOperationFromBorrowerOperation(operation: BorrowerOperation): string {
+export function getTroveOperationFromBorrowerOperation(
+  operation: BorrowerOperation
+): string {
   switch (operation) {
     case BorrowerOperation.openTrove:
       return "openTrove";
@@ -12,6 +15,8 @@ export function getTroveOperationFromBorrowerOperation(operation: BorrowerOperat
       return "closeTrove";
     case BorrowerOperation.adjustTrove:
       return "adjustTrove";
+    case BorrowerOperation.transferGainToLineOfCredit:
+      return "transferGainToLineOfCredit";
   }
 
   // AssemblyScript can't tell we will never reach this, so it insists on a return statement
@@ -22,7 +27,8 @@ export function isBorrowerOperation(troveOperation: string): boolean {
   return (
     troveOperation == "openTrove" ||
     troveOperation == "closeTrove" ||
-    troveOperation == "adjustTrove"
+    troveOperation == "adjustTrove" ||
+    troveOperation == "transferGainToLineOfCredit"
   );
 }
 
@@ -52,7 +58,10 @@ export function getTroveOperationFromTroveManagerOperation(
 }
 
 export function isLiquidation(troveOperation: string): boolean {
-  return troveOperation == "liquidateInNormalMode" || troveOperation == "liquidateInRecoveryMode";
+  return (
+    troveOperation == "liquidateInNormalMode" ||
+    troveOperation == "liquidateInRecoveryMode"
+  );
 }
 
 export function isRecoveryModeLiquidation(troveOperation: string): boolean {

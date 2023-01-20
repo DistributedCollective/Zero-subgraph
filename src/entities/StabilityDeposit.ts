@@ -16,6 +16,7 @@ import { decimalize, DECIMAL_ZERO, BIGINT_ZERO } from "../utils/bignumbers";
 import { beginChange, initChange, finishChange } from "./Change";
 import { getUser } from "./User";
 import { updateSystemStateByStabilityDepositChange } from "./SystemState";
+import { CallSignatures } from "../utils/constants";
 
 function getStabilityDeposit(_user: Address): StabilityDeposit {
   let id = _user.toHexString();
@@ -128,10 +129,16 @@ export function withdrawCollateralGainFromStabilityDeposit(
   let depositLoss = decimalize(_ZUSDLoss);
   let newDepositedAmount = stabilityDeposit.depositedAmount.minus(depositLoss);
 
+  const callSig = event.transaction.input.toHexString().slice(0, 10);
+  const operation =
+    callSig == CallSignatures.withdrawETHGainToTrove
+      ? "withdrawGainToLineOfCredit"
+      : "withdrawCollateralGain";
+
   updateStabilityDepositByOperation(
     event,
     stabilityDeposit,
-    "withdrawCollateralGain",
+    operation,
     newDepositedAmount,
     decimalize(_ETH)
   );

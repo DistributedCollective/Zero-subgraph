@@ -1,6 +1,6 @@
 {
   "name": "zero-subgraph",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "scripts": {
     "create": "graph create  DistributedCollective/zero-subgraph --node https://api.thegraph.com/deploy/",
     "create-local": "graph create  DistributedCollective/zero-subgraph --node http://127.0.0.1:8020",
@@ -24,8 +24,8 @@
     "dev:down": "docker compose --env-file .env.dev down"
   },
   "devDependencies": {
-    "@graphprotocol/graph-cli": "^0.37.0",
-    "@graphprotocol/graph-ts": "^0.29.0",
+    "@graphprotocol/graph-cli": "^0.25.3",
+    "@graphprotocol/graph-ts": "^0.24.1",
     "@protofire/subgraph-toolkit": "^0.1.2",
     "commander": "^8.3.0",
     "dotenv": "^16.0.0",
