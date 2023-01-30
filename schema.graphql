@@ -180,7 +180,7 @@ interface Change {
   transaction: Transaction!
 
   systemStateBefore: SystemState!
-  systemStateAfter: SystemState!
+  systemStateAfter: SystemState
 }
 
 enum TroveOperation {
@@ -199,7 +199,7 @@ type TroveChange implements Change @entity {
   sequenceNumber: Int!
   transaction: Transaction!
   systemStateBefore: SystemState!
-  systemStateAfter: SystemState!
+  systemStateAfter: SystemState
 
   trove: Trove!
   troveOperation: TroveOperation!
@@ -233,7 +233,7 @@ type StabilityDepositChange implements Change @entity {
   sequenceNumber: Int!
   transaction: Transaction!
   systemStateBefore: SystemState!
-  systemStateAfter: SystemState!
+  systemStateAfter: SystemState
 
   stabilityDeposit: StabilityDeposit!
   stabilityDepositOperation: StabilityDepositOperation!
@@ -250,7 +250,7 @@ type PriceChange implements Change @entity {
   sequenceNumber: Int!
   transaction: Transaction!
   systemStateBefore: SystemState!
-  systemStateAfter: SystemState!
+  systemStateAfter: SystemState
 
   priceChange: BigDecimal!
 }
@@ -299,7 +299,7 @@ type CollSurplusChange implements Change @entity {
   sequenceNumber: Int!
   transaction: Transaction!
   systemStateBefore: SystemState!
-  systemStateAfter: SystemState!
+  systemStateAfter: SystemState
 
   user: User!
 
