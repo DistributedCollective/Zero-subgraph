@@ -1,4 +1,4 @@
-specVersion: 0.0.2
+specVersion: 0.0.5
 description: Zero subgraph
 repository: https://github.com/DistributedCollective/Sovryn-subgraph
 schema:
@@ -16,7 +16,7 @@ dataSources:
       file: ./src/mappings/TroveManager.ts
       language: wasm/assemblyscript
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.7
       entities:
         - Global
         - User
@@ -32,15 +32,15 @@ dataSources:
       eventHandlers:
         - event: TroveUpdated(indexed address,uint256,uint256,uint256,uint8)
           handler: handleTroveUpdated
-          #receipt: true
+          receipt: true
         - event: TroveLiquidated(indexed address,uint256,uint256,uint8)
           handler: handleTroveLiquidated
-          #receipt: true
+          receipt: true
         - event: Liquidation(uint256,uint256,uint256,uint256)
           handler: handleLiquidation
         - event: Redemption(uint256,uint256,uint256,uint256)
           handler: handleRedemption
-          #receipt: true
+          receipt: true
         - event: LTermsUpdated(uint256,uint256)
           handler: handleLTermsUpdated
 
@@ -55,7 +55,7 @@ dataSources:
       file: ./src/mappings/BorrowerOperations.ts
       language: wasm/assemblyscript
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.7
       entities:
         - Global
         - User
@@ -69,7 +69,7 @@ dataSources:
       eventHandlers:
         - event: TroveUpdated(indexed address,uint256,uint256,uint256,uint8)
           handler: handleTroveUpdated
-          #receipt: true
+          receipt: true
         - event: ZUSDBorrowingFeePaid(indexed address,uint256)
           handler: handleZUSDBorrowingFeePaid
 
@@ -84,7 +84,7 @@ dataSources:
       file: ./src/mappings/PriceFeed.ts
       language: wasm/assemblyscript
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.7
       entities:
         - Global
         - Transaction
@@ -108,7 +108,7 @@ dataSources:
       file: ./src/mappings/StabilityPool.ts
       language: wasm/assemblyscript
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.7
       entities:
         - Global
         - User
@@ -123,13 +123,13 @@ dataSources:
       eventHandlers:
         - event: UserDepositChanged(indexed address,uint256)
           handler: handleUserDepositChanged
-          #receipt: true
+          receipt: true
         - event: RBTCGainWithdrawn(indexed address,uint256,uint256)
           handler: handleRBTCGainWithdrawn
-          #receipt: true
+          receipt: true
         - event: ETHGainWithdrawn(indexed address,uint256,uint256)
           handler: handleETHGainWithdrawn
-          #receipt: true
+          receipt: true
 
   - name: CollSurplusPool
     kind: ethereum/contract
@@ -142,7 +142,7 @@ dataSources:
       file: ./src/mappings/CollSurplusPool.ts
       language: wasm/assemblyscript
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.7
       entities:
         - Global
         - User
@@ -156,7 +156,7 @@ dataSources:
       eventHandlers:
         - event: CollBalanceUpdated(indexed address,uint256)
           handler: handleCollSurplusBalanceUpdated
-          #receipt: true
+          receipt: true
 
   - name: ZUSDToken
     kind: ethereum/contract
@@ -169,7 +169,7 @@ dataSources:
       file: ./src/mappings/Token.ts
       language: wasm/assemblyscript
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.7
       entities:
         - Global
         - User
@@ -181,7 +181,7 @@ dataSources:
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTokenTransfer
-          #receipt: true
+          receipt: true
         - event: Approval(indexed address,indexed address,uint256)
           handler: handleTokenApproval
 
@@ -194,7 +194,7 @@ dataSources:
       startBlock: {{ActivePool.startBlock}}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
         - ActivePoolAddressChanged
@@ -214,5 +214,5 @@ dataSources:
       eventHandlers:
         - event: EtherSent(address,uint256)
           handler: handleEtherSent
-          #receipt: true
+          receipt: true
       file: ./src/mappings/ActivePool.ts
