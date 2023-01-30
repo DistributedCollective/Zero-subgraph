@@ -7,37 +7,37 @@
     },
     "ActivePool": {
         "network": "testnet",
-        "address": "0xd7d6cF12FEb339Dc99a6d5b7a54bDD37953fc937",
-        "startBlock": 2924261
+        "address": "0xAD16eBA4EF0ff4C1aB5ffd89c485D5CfC51b5E61",
+        "startBlock": 3473997
     },
     "TroveManager": {
         "network": "testnet",
-        "address": "0x56743107c181B32D3A7455d46Be7923aA1045D9E",
-        "startBlock": 2924261
+        "address": "0xd8aB7EC3bd20A0Ce3084e124bFBC9Aa96a6D7FdD",
+        "startBlock": 3474007
     },
     "BorrowerOperations": {
         "network": "testnet",
-        "address": "0x135A1545fa1B2989251921737CD7862c98244FbF",
-        "startBlock": 2924261
+        "address": "0xba8d7B80bcb3A01A5e713c356fD18EeD299B70D0",
+        "startBlock": 3474002
     },
     "PriceFeed": {
         "network": "testnet",
-        "address": "0xd8EE497567E727fa191958823C67238AAA9a8d01",
-        "startBlock": 2924261
+        "address": "0x89627aa178C7d587f07Df7B863032a47f53540BD",
+        "startBlock": 3474038
     },
     "StabilityPool": {
         "network": "testnet",
-        "address": "0xd6eD2f49D0A3bF20126cB78119c7CB24D02d605F",
-        "startBlock": 2924261
+        "address": "0x176D218CaB70002CEF08e15271476187c37ed25f",
+        "startBlock": 3516243
     },
     "CollSurplusPool": {
         "network": "testnet",
-        "address": "0x8b37726a653dC4446cD8c9C1468784b1E68b1034",
-        "startBlock": 2924261
+        "address": "0x6b74D66210f78dF0Ffb3A0D6A87471A1345C1284",
+        "startBlock": 3507722
     },
     "ZUSDToken": {
         "network": "testnet",
-        "address": "0x6b41566353d6C7B8C2a7931d498F11489DacAc29",
-        "startBlock": 2924261
+        "address": "0xe67cbA98C183A1693fC647d63AeeEC4053656dBB",
+        "startBlock": 3526476
     }
 }
