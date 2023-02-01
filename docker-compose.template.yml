@@ -1,18 +1,7 @@
 version: '3'
 services:
-  graph-node:
+  graph-node-write:
     image: graphprotocol/graph-node:v0.27.0
-    ports:
-      - '8000:8000'
-      - '8001:8001'
-      - '8020:8020'
-      - '8030:8030'
-      - '8040:8040'
-    expose:
-      - 8000
-      - 8001
-      - 8020
-      - 8030
     depends_on:
       - ipfs
       - postgres
@@ -29,6 +18,37 @@ services:
       GRAPH_SQL_STATEMENT_TIMEOUT: '10'
       GRAPH_GRAPHQL_MAX_DEPTH: '16'
       GRAPH_GRAPHQL_MAX_COMPLEXITY: '1500000'
+  graph-node-read:
+    image: graphprotocol/graph-node:v0.27.0
+    ports:
+      - '8000:8000'
+      - '8001:8001'
+      - '8020:8020'
+      - '8030:8030'
+      - '8040:8040'
+    expose:
+      - 8000
+      - 8001
+      - 8020
+      - 8030
+    depends_on:
+      - ipfs
+      - postgres
+      - graph-node-write
+    environment:
+      postgres_host: postgres
+      postgres_user: postgres
+      postgres_pass: ${postgres_pass}
+      postgres_db: postgres
+      ipfs: 'ipfs:5001'
+      # Change next line if you want to connect to a different JSON-RPC endpoint
+      ethereum: '{{node.network}}:{{& node.address}}'
+      GRAPH_LOG: '{{node.log_level}}'
+      GRAPH_GRAPHQL_QUERY_TIMEOUT: '10'
+      GRAPH_SQL_STATEMENT_TIMEOUT: '10'
+      GRAPH_GRAPHQL_MAX_DEPTH: '16'
+      GRAPH_GRAPHQL_MAX_COMPLEXITY: '1500000'
+      DISABLE_BLOCK_INGESTOR: true
   ipfs:
     image: ipfs/go-ipfs:v0.11.0
     ports:
