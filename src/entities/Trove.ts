@@ -155,13 +155,19 @@ export function updateTrove(
   trove.rawDebt = _debt;
   trove.rawStake = stake;
 
+  if (_coll == BIGINT_ZERO || _debt == BIGINT_ZERO) {
+    trove.collateralRatioSortKey = BIGINT_ZERO;
+  } else {
+    trove.collateralRatioSortKey = _coll.div(_debt);
+  }
+
   if (stake != BIGINT_ZERO) {
     trove.rawSnapshotOfTotalRedistributedCollateral =
       global.rawTotalRedistributedCollateral;
     trove.rawSnapshotOfTotalRedistributedDebt =
       global.rawTotalRedistributedDebt;
 
-    trove.collateralRatioSortKey = _debt
+    trove.collateralRatioSortKey_legacy = _debt
       .times(BIGINT_SCALING_FACTOR)
       .div(stake)
       .minus(global.rawTotalRedistributedDebt);
