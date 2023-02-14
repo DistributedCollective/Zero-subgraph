@@ -121,7 +121,7 @@ type Trove @entity {
   "Ordering by this field will result in the same ordering as collateral ratio (except reversed)"
   collateralRatioSortKey_legacy: BigInt
 
-  collateralRatioSortKey: BigInt
+  collateralRatioSortKey: BigDecimal
 }
 
 type StabilityDeposit @entity {

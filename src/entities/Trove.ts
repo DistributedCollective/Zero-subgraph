@@ -1,4 +1,10 @@
-import { ethereum, Address, BigInt } from "@graphprotocol/graph-ts";
+import {
+  ethereum,
+  Address,
+  BigInt,
+  BigDecimal,
+  bigDecimal
+} from "@graphprotocol/graph-ts";
 
 import { Trove, TroveChange } from "../../generated/schema";
 
@@ -156,9 +162,11 @@ export function updateTrove(
   trove.rawStake = stake;
 
   if (_coll == BIGINT_ZERO || _debt == BIGINT_ZERO) {
-    trove.collateralRatioSortKey = BIGINT_ZERO;
+    trove.collateralRatioSortKey = BigDecimal.zero();
   } else {
-    trove.collateralRatioSortKey = _coll.div(_debt);
+    const collDecimal = new BigDecimal(_coll);
+    const debtDecimal = new BigDecimal(_debt);
+    trove.collateralRatioSortKey = debtDecimal.div(collDecimal).truncate(18);
   }
 
   if (stake != BIGINT_ZERO) {
