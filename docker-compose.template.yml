@@ -5,6 +5,8 @@ services:
     depends_on:
       - ipfs
       - postgres
+    ports:
+      - '8020:8020'
     environment:
       postgres_host: postgres
       postgres_user: postgres

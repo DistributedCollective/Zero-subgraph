@@ -39,6 +39,7 @@ securityContext: {}
 extraEnvs:
   #postgres_host: postgres
   #ipfs: 'ipfs:5001'
+  #ethereum: '{{node.network}}:{{& node.address}}'
 
 envs:
   postgres_user: postgres
@@ -49,7 +50,6 @@ envs:
   GRAPH_GRAPHQL_MAX_COMPLEXITY: '1500000'
   DISABLE_BLOCK_INGESTOR: true
   GRAPH_LOG: 'DEBUG'
-  #ethereum: '{{node.network}}:{{& node.address}}'
 
 service:
   type: ClusterIP
