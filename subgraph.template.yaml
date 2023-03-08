@@ -116,6 +116,7 @@ dataSources:
         - StabilityDeposit
         - StabilityDepositChange
         - SystemState
+        - Snapshot
         # - Frontend
       abis:
         - name: StabilityPool
@@ -130,6 +131,16 @@ dataSources:
         - event: ETHGainWithdrawn(indexed address,uint256,uint256)
           handler: handleETHGainWithdrawn
           receipt: true
+        - event: DepositSnapshotUpdated(indexed address,uint256,uint256,uint256)
+          handler: handleDepositSnapshotUpdated
+        - event: P_Updated(uint256)
+          handler: handlePUpdated
+        - event: S_Updated(uint256,uint128,uint128)
+          handler: handleSUpdated
+        - event: G_Updated(uint256,uint128,uint128)
+          handler: handleGUpdated
+        - event: EpochUpdated(uint128)
+          handler: handleEpochUpdated
 
   - name: CollSurplusPool
     kind: ethereum/contract

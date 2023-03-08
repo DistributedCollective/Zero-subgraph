@@ -130,6 +130,8 @@ type StabilityDeposit @entity {
 
   depositedAmount: BigDecimal!
 
+  currentSnapshot: Snapshot
+
   # frontend: Frontend
 
   changes: [StabilityDepositChange!]! @derivedFrom(field: "stabilityDeposit")
@@ -383,4 +385,27 @@ type RevenueWeekly @entity {
   """
   liquidationCompensation: BigDecimal!
   periodStartUnix: BigInt!
+}
+
+type StabilityDepositVariable @entity {
+  id: ID!
+  _S: BigInt!
+  _P: BigInt!
+  _G: BigInt!
+  epoch: BigInt!
+  scale: BigInt!
+  sumS: BigInt!
+  blockNumber: Int!
+  systemStateSequenceNumber: Int!
+}
+
+type Snapshot @entity {
+  id: ID!
+  depositor: StabilityDeposit!
+  _P: BigInt!
+  _S: BigInt!
+  _G: BigInt!
+  timestamp: Int!
+  blockNumber: Int!
+  systemStateSequenceNumber: Int!
 }
