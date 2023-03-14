@@ -245,6 +245,11 @@ type StabilityDepositChange implements Change @entity {
   depositedAmountAfter: BigDecimal!
 
   collateralGain: BigDecimal
+
+  """
+  Block number is needed internally to calculate gains per user
+  """
+  blockNumber: Int!
 }
 
 type PriceChange implements Change @entity {
