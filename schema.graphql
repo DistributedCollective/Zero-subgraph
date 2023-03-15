@@ -119,7 +119,9 @@ type Trove @entity {
   rawSnapshotOfTotalRedistributedDebt: BigInt!
 
   "Ordering by this field will result in the same ordering as collateral ratio (except reversed)"
-  collateralRatioSortKey: BigInt
+  collateralRatioSortKey_legacy: BigInt
+
+  collateralRatioSortKey: BigDecimal
 }
 
 type StabilityDeposit @entity {
