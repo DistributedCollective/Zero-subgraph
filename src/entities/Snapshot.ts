@@ -23,6 +23,7 @@ export function createAndReturnSnapshot(
   );
   if (depositor !== null) {
     depositor.currentSnapshot = snapshot.id;
+    depositor.save();
   }
 
   return snapshot;
