@@ -36,6 +36,8 @@ type Global @entity {
   # currentActivePool: ActivePool
   currentSystemState: SystemState
 
+  currentSPVariable: StabilityDepositVariable
+
   "Only used internally as temporary storage. Will always be null in queries"
   currentLiquidation: Liquidation
 

@@ -18,8 +18,13 @@ import {
   withdrawCollateralGainFromStabilityDeposit
 } from "../entities/StabilityDeposit";
 
-import { Snapshot, TempDepositUpdate } from "../../generated/schema";
-import { createOrUpdateStabilityDepositVariable } from "../entities/StabilityDepositVariable";
+import { TempDepositUpdate } from "../../generated/schema";
+import {
+  updateEpoch,
+  updateG,
+  updateP,
+  updateS
+} from "../entities/StabilityDepositVariable";
 import { createAndReturnSnapshot } from "../entities/Snapshot";
 // Read the value of tmpDepositUpdate from the Global entity, and replace it with:
 //  - null, if it wasn't null
@@ -113,42 +118,17 @@ export function handleDepositSnapshotUpdated(
 }
 
 export function handlePUpdated(event: P_Updated): void {
-  const variableEntity = createOrUpdateStabilityDepositVariable(
-    event.block.number.toI32()
-  );
-  variableEntity._P = event.params._P;
-  variableEntity.save();
+  updateP(event);
 }
 
 export function handleSUpdated(event: S_Updated): void {
-  const variableEntity = createOrUpdateStabilityDepositVariable(
-    event.block.number.toI32()
-  );
-  variableEntity._S = event.params._S;
-  variableEntity.scale = event.params._scale;
-  if (variableEntity.epoch == event.params._epoch) {
-    variableEntity.sumS = variableEntity.sumS.plus(event.params._S);
-  } else {
-    variableEntity.sumS = event.params._S;
-  }
-  variableEntity.epoch = event.params._epoch;
-  variableEntity.save();
+  updateS(event);
 }
 
 export function handleGUpdated(event: G_Updated): void {
-  const variableEntity = createOrUpdateStabilityDepositVariable(
-    event.block.number.toI32()
-  );
-  variableEntity._G = event.params._G;
-  variableEntity.scale = event.params._scale;
-  variableEntity.epoch = event.params._epoch;
-  variableEntity.save();
+  updateG(event);
 }
 
 export function handleEpochUpdated(event: EpochUpdated): void {
-  const variableEntity = createOrUpdateStabilityDepositVariable(
-    event.block.number.toI32()
-  );
-  variableEntity.epoch = event.params._currentEpoch;
-  variableEntity.save();
+  updateEpoch(event);
 }
