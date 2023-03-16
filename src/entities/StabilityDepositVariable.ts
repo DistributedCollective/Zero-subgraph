@@ -1,11 +1,11 @@
 import { BigInt } from "@graphprotocol/graph-ts";
 import { StabilityDepositVariable } from "../../generated/schema";
-import { getSystemStateSequenceNumber } from "./Global";
+import { getLastChangeSequenceNumber } from "./Global";
 
 export const createOrUpdateStabilityDepositVariable = (
   blockNumber: i32
 ): StabilityDepositVariable => {
-  const systemStateSequenceNumber = getSystemStateSequenceNumber();
+  const systemStateSequenceNumber = getLastChangeSequenceNumber();
   let entity = StabilityDepositVariable.load("only");
   if (entity === null) {
     entity = new StabilityDepositVariable("only");
