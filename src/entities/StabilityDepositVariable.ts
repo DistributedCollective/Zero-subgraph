@@ -1,5 +1,5 @@
 import { BigInt } from "@graphprotocol/graph-ts";
-import { StabilityDepositVariable } from "../../generated/schema";
+import { StabilityDepositVariable, Global } from "../../generated/schema";
 import {
   EpochUpdated,
   G_Updated,
@@ -8,7 +8,12 @@ import {
 } from "../../generated/StabilityPool/StabilityPool";
 import { getGlobal } from "./Global";
 
-const updateStabilityDepositVariable = (): StabilityDepositVariable => {
+class ISPVariable {
+  entity: StabilityDepositVariable;
+  global: Global;
+}
+
+const updateStabilityDepositVariable = (): ISPVariable => {
   const global = getGlobal();
   const currentSPVariable = global.currentSPVariable;
   const currentSystemState = global.currentSystemState;
@@ -33,30 +38,40 @@ const updateStabilityDepositVariable = (): StabilityDepositVariable => {
     newEntity.scale = entity.scale;
     newEntity.sumS = entity.sumS;
   }
-  (newEntity.systemStateSequenceNumber = systemStateSequenceNumber),
-    (global.currentSPVariable = nextSpVariableId.toString());
-  global.save();
-  return newEntity;
+  newEntity.systemStateSequenceNumber = systemStateSequenceNumber;
+  global.currentSPVariable = nextSpVariableId.toString();
+  return {
+    entity: newEntity,
+    global: global
+  };
 };
 
 export const updateP = (event: P_Updated): void => {
-  const entity = updateStabilityDepositVariable();
+  const updateVariables = updateStabilityDepositVariable();
+  const entity = updateVariables.entity;
+  const global = updateVariables.global;
   entity._P = event.params._P;
   entity.blockNumber = event.block.number.toI32();
   entity.save();
+  global.save();
 };
 
 export const updateG = (event: G_Updated): void => {
-  const entity = updateStabilityDepositVariable();
+  const updateVariables = updateStabilityDepositVariable();
+  const entity = updateVariables.entity;
+  const global = updateVariables.global;
   entity._G = event.params._G;
   entity.scale = event.params._scale;
   entity.epoch = event.params._epoch;
   entity.blockNumber = event.block.number.toI32();
   entity.save();
+  global.save();
 };
 
 export const updateS = (event: S_Updated): void => {
-  const entity = updateStabilityDepositVariable();
+  const updateVariables = updateStabilityDepositVariable();
+  const entity = updateVariables.entity;
+  const global = updateVariables.global;
   entity._S = event.params._S;
   entity.scale = event.params._scale;
   if (entity.epoch == event.params._epoch) {
@@ -67,11 +82,15 @@ export const updateS = (event: S_Updated): void => {
   entity.epoch = event.params._epoch;
   entity.blockNumber = event.block.number.toI32();
   entity.save();
+  global.save();
 };
 
 export const updateEpoch = (event: EpochUpdated): void => {
-  const entity = updateStabilityDepositVariable();
+  const updateVariables = updateStabilityDepositVariable();
+  const entity = updateVariables.entity;
+  const global = updateVariables.global;
   entity.epoch = event.params._currentEpoch;
   entity.blockNumber = event.block.number.toI32();
   entity.save();
+  global.save();
 };
