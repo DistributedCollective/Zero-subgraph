@@ -1,11 +1,11 @@
 import { Snapshot, StabilityDeposit } from "../../generated/schema";
 import { DepositSnapshotUpdated } from "../../generated/StabilityPool/StabilityPool";
-import { getSystemStateSequenceNumber } from "./Global";
+import { getLastChangeSequenceNumber } from "./Global";
 
 export function createAndReturnSnapshot(
   event: DepositSnapshotUpdated
 ): Snapshot {
-  const systemState = getSystemStateSequenceNumber();
+  const systemState = getLastChangeSequenceNumber();
   const snapshot = new Snapshot(
     event.transaction.hash.toHexString() + "_" + event.logIndex.toString()
   );
