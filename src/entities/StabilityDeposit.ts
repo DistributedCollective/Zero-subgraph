@@ -17,6 +17,7 @@ import { beginChange, initChange, finishChange } from "./Change";
 import { getUser } from "./User";
 import { updateSystemStateByStabilityDepositChange } from "./SystemState";
 import { CallSignatures } from "../utils/constants";
+import { createInitialSnapshot } from "./Snapshot";
 
 function getStabilityDeposit(_user: Address): StabilityDeposit {
   let id = _user.toHexString();
@@ -32,7 +33,9 @@ function getStabilityDeposit(_user: Address): StabilityDeposit {
     newStabilityDeposit.depositedAmount = DECIMAL_ZERO;
     owner.stabilityDeposit = newStabilityDeposit.id;
     owner.save();
-
+    newStabilityDeposit.save();
+    newStabilityDeposit.currentSnapshot = owner.id;
+    createInitialSnapshot(owner.id);
     return newStabilityDeposit;
   }
 }
@@ -44,6 +47,7 @@ function createStabilityDepositChange(
   let stabilityDepositChange = new StabilityDepositChange(
     sequenceNumber.toString()
   );
+  stabilityDepositChange.blockNumber = event.block.number.toI32();
   initChange(stabilityDepositChange, event, sequenceNumber);
 
   return stabilityDepositChange;
