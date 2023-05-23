@@ -3,7 +3,7 @@ import { BigInt } from '@graphprotocol/graph-ts';
 import {
   UserDepositChanged,
   ETHGainWithdrawn,
-  SOVPaidToDepositor
+  SOVPaidToDepositor,
 } from '../../generated/StabilityPool/StabilityPool';
 
 import { BIGINT_ZERO } from '../utils/bignumbers';
@@ -13,7 +13,7 @@ import {
   withdrawCollateralGainFromStabilityDeposit,
 } from '../entities/StabilityDeposit';
 
-import { TempDepositUpdate } from '../../generated/schema';
+import { SOVDistribution, TempDepositUpdate } from '../../generated/schema';
 // Read the value of tmpDepositUpdate from the Global entity, and replace it with:
 //  - null, if it wasn't null
 //  - valueToSetIfNull if it was null
@@ -76,15 +76,11 @@ export function handleETHGainWithdrawn(event: ETHGainWithdrawn): void {
 }
 
 export function handleSOVPaidToDepositor(event: SOVPaidToDepositor): void {
-  let ethGainWithdrawn = swapTmpDepositUpdate(
-    event.params._SOV,
+  let SOVDistributionEntity = new SOVDistribution(
     event.transaction.hash.toHexString()
   );
-  if (ethGainWithdrawn !== null) {
-    updateStabilityDeposit(
-      event,
-      event.params._depositor,
-      event.params._SOV
-    );
-  }
+
+  SOVDistributionEntity.amount = event.params._SOV;
+  SOVDistributionEntity.user = event.params._depositor;
+  SOVDistributionEntity.save();
 }
