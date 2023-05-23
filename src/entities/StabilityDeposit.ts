@@ -1,14 +1,8 @@
-import {
-  ethereum,
-  Address,
-  BigInt,
-  BigDecimal,
-  log
-} from "@graphprotocol/graph-ts";
+import { ethereum, Address, BigInt, BigDecimal } from "@graphprotocol/graph-ts";
 
 import {
   StabilityDepositChange,
-  StabilityDeposit
+  StabilityDeposit,
 } from "../../generated/schema";
 
 import { decimalize, DECIMAL_ZERO, BIGINT_ZERO } from "../utils/bignumbers";
