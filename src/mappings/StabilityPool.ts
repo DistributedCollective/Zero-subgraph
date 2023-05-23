@@ -77,7 +77,7 @@ export function handleETHGainWithdrawn(event: ETHGainWithdrawn): void {
 
 export function handleSOVPaidToDepositor(event: SOVPaidToDepositor): void {
   let SOVDistributionEntity = new SOVDistribution(
-    event.transaction.hash.toHexString()
+    event.transaction.hash.toHexString() + "/" + event.logIndex.toString()
   );
 
   SOVDistributionEntity.amount = event.params._SOV;

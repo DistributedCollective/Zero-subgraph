@@ -8,7 +8,7 @@ import {
 import { decimalize, DECIMAL_ZERO, BIGINT_ZERO } from "../utils/bignumbers";
 
 import { beginChange, initChange, finishChange } from "./Change";
-import { getUser } from "./User";\
+import { getUser } from "./User";
 import { updateSystemStateByStabilityDepositChange } from "./SystemState";
 import { CallSignatures } from "../utils/constants";
 
