@@ -1,16 +1,16 @@
-import { ethereum, Address, BigInt, BigDecimal } from '@graphprotocol/graph-ts';
+import { ethereum, Address, BigInt, BigDecimal } from "@graphprotocol/graph-ts";
 
 import {
   StabilityDepositChange,
   StabilityDeposit,
-} from '../../generated/schema';
+} from "../../generated/schema";
 
-import { decimalize, DECIMAL_ZERO, BIGINT_ZERO } from '../utils/bignumbers';
+import { decimalize, DECIMAL_ZERO, BIGINT_ZERO } from "../utils/bignumbers";
 
-import { beginChange, initChange, finishChange } from './Change';
-import { getUser } from './User';
-import { updateSystemStateByStabilityDepositChange } from './SystemState';
-import { CallSignatures } from '../utils/constants';
+import { beginChange, initChange, finishChange } from "./Change";
+import { getUser } from "./User";\
+import { updateSystemStateByStabilityDepositChange } from "./SystemState";
+import { CallSignatures } from "../utils/constants";
 
 function getStabilityDeposit(_user: Address): StabilityDeposit {
   let id = _user.toHexString();
@@ -100,8 +100,8 @@ export function updateStabilityDeposit(
     event,
     stabilityDeposit,
     newDepositedAmount > stabilityDeposit.depositedAmount
-      ? 'depositTokens'
-      : 'withdrawTokens',
+      ? "depositTokens"
+      : "withdrawTokens",
     newDepositedAmount
   );
 
@@ -126,8 +126,8 @@ export function withdrawCollateralGainFromStabilityDeposit(
   const callSig = event.transaction.input.toHexString().slice(0, 10);
   const operation =
     callSig == CallSignatures.withdrawETHGainToTrove
-      ? 'withdrawGainToLineOfCredit'
-      : 'withdrawCollateralGain';
+      ? "withdrawGainToLineOfCredit"
+      : "withdrawCollateralGain";
 
   updateStabilityDepositByOperation(
     event,

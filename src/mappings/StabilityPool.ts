@@ -1,19 +1,19 @@
-import { BigInt } from '@graphprotocol/graph-ts';
+import { BigInt } from "@graphprotocol/graph-ts";
 
 import {
   UserDepositChanged,
   ETHGainWithdrawn,
   SOVPaidToDepositor,
-} from '../../generated/StabilityPool/StabilityPool';
+} from "../../generated/StabilityPool/StabilityPool";
 
-import { BIGINT_ZERO } from '../utils/bignumbers';
+import { BIGINT_ZERO } from "../utils/bignumbers";
 
 import {
   updateStabilityDeposit,
   withdrawCollateralGainFromStabilityDeposit,
-} from '../entities/StabilityDeposit';
+} from "../entities/StabilityDeposit";
 
-import { SOVDistribution, TempDepositUpdate } from '../../generated/schema';
+import { SOVDistribution, TempDepositUpdate } from "../../generated/schema";
 // Read the value of tmpDepositUpdate from the Global entity, and replace it with:
 //  - null, if it wasn't null
 //  - valueToSetIfNull if it was null
