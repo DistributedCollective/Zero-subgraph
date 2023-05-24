@@ -57,6 +57,7 @@ type SOVDistribution @entity {
   id: ID!
   amount: BigInt
   user: Bytes!
+  timestamp: Int!
 }
 
 type SystemState @entity {
