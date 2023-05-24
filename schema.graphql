@@ -37,6 +37,7 @@ type Global @entity {
   currentSystemState: SystemState
 
   currentSPVariable: StabilityDepositVariable
+  epoch: Int!
 
   "Only used internally as temporary storage. Will always be null in queries"
   currentLiquidation: Liquidation
@@ -410,6 +411,7 @@ type Snapshot @entity {
   _P: BigInt!
   _S: BigInt!
   _G: BigInt!
+  epoch: Int!
   timestamp: Int!
   blockNumber: Int!
   systemStateSequenceNumber: Int!

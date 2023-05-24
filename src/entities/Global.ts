@@ -34,6 +34,7 @@ export function getGlobal(): Global {
     newGlobal.totalStabilityPoolProfits = DECIMAL_ZERO;
     newGlobal.totalLiquidationCompensation = DECIMAL_ZERO;
     newGlobal.totalLiquidationVolume = DECIMAL_ZERO;
+    newGlobal.epoch = 0;
 
     return newGlobal;
   }

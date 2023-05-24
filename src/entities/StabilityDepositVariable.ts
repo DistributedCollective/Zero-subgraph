@@ -92,5 +92,6 @@ export const updateEpoch = (event: EpochUpdated): void => {
   entity.epoch = event.params._currentEpoch;
   entity.blockNumber = event.block.number.toI32();
   entity.save();
+  global.epoch = event.params._currentEpoch.toI32();
   global.save();
 };

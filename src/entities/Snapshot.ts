@@ -1,4 +1,4 @@
-import { bigInt, BigInt, ethereum } from "@graphprotocol/graph-ts";
+import { BigInt } from "@graphprotocol/graph-ts";
 import {
   Snapshot,
   StabilityDeposit,
@@ -11,7 +11,8 @@ import { getGlobal, getLastChangeSequenceNumber } from "./Global";
 export function createAndReturnSnapshot(
   event: DepositSnapshotUpdated
 ): Snapshot {
-  const systemState = getLastChangeSequenceNumber();
+  const global = getGlobal();
+  const systemState = global.changeCount - 1;
   const snapshot = new Snapshot(
     event.transaction.hash.toHexString() + "_" + event.logIndex.toString()
   );
@@ -22,6 +23,7 @@ export function createAndReturnSnapshot(
   snapshot.timestamp = event.block.timestamp.toI32();
   snapshot.blockNumber = event.block.number.toI32();
   snapshot.systemStateSequenceNumber = systemState;
+  snapshot.epoch = global.epoch;
   snapshot.save();
 
   const depositor = StabilityDeposit.load(
@@ -49,11 +51,13 @@ export function createInitialSnapshot(user: string): void {
         snapshot._P = spVariable._P;
         snapshot._S = spVariable._S;
         snapshot._G = spVariable._G;
+        snapshot.epoch = global.epoch;
       }
     } else {
       snapshot._P = BIGINT_SCALING_FACTOR;
       snapshot._S = BIGINT_SCALING_FACTOR;
       snapshot._G = BIGINT_SCALING_FACTOR;
+      snapshot.epoch = 0;
     }
     snapshot.timestamp = 0;
     snapshot.blockNumber = 0;
