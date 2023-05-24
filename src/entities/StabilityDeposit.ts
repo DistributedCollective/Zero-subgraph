@@ -60,6 +60,7 @@ function updateStabilityDepositByOperation(
   let stabilityDepositChange = createStabilityDepositChange(event);
 
   stabilityDepositChange.stabilityDeposit = stabilityDeposit.id;
+  stabilityDepositChange.blockNumber = event.block.number.toI32();
   stabilityDepositChange.stabilityDepositOperation = operation;
   stabilityDepositChange.depositedAmountBefore =
     stabilityDeposit.depositedAmount;
