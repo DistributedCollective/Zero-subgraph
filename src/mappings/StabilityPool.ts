@@ -7,15 +7,15 @@ import {
   S_Updated,
   G_Updated,
   P_Updated,
-  EpochUpdated
-  SOVPaidToDepositor,
+  EpochUpdated,
+  SOVPaidToDepositor
 } from "../../generated/StabilityPool/StabilityPool";
 
 import { BIGINT_ZERO } from "../utils/bignumbers";
 
 import {
   updateStabilityDeposit,
-  withdrawCollateralGainFromStabilityDeposit,
+  withdrawCollateralGainFromStabilityDeposit
 } from "../entities/StabilityDeposit";
 import {
   updateEpoch,
