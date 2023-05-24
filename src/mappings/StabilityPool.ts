@@ -82,5 +82,6 @@ export function handleSOVPaidToDepositor(event: SOVPaidToDepositor): void {
 
   SOVDistributionEntity.amount = event.params._SOV;
   SOVDistributionEntity.user = event.params._depositor;
+  SOVDistributionEntity.timestamp = event.block.timestamp.toI32();
   SOVDistributionEntity.save();
 }
