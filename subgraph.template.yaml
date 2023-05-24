@@ -125,9 +125,6 @@ dataSources:
         - event: UserDepositChanged(indexed address,uint256)
           handler: handleUserDepositChanged
           receipt: true
-        - event: RBTCGainWithdrawn(indexed address,uint256,uint256)
-          handler: handleRBTCGainWithdrawn
-          receipt: true
         - event: ETHGainWithdrawn(indexed address,uint256,uint256)
           handler: handleETHGainWithdrawn
           receipt: true
@@ -141,6 +138,9 @@ dataSources:
           handler: handleGUpdated
         - event: EpochUpdated(uint128)
           handler: handleEpochUpdated
+        - event: SOVPaidToDepositor(indexed address,uint256)
+          handler: handleSOVPaidToDepositor
+          receipt: true
 
   - name: CollSurplusPool
     kind: ethereum/contract

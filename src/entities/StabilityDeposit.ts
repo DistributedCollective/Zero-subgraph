@@ -1,14 +1,8 @@
-import {
-  ethereum,
-  Address,
-  BigInt,
-  BigDecimal,
-  log
-} from "@graphprotocol/graph-ts";
+import { ethereum, Address, BigInt, BigDecimal } from "@graphprotocol/graph-ts";
 
 import {
   StabilityDepositChange,
-  StabilityDeposit
+  StabilityDeposit,
 } from "../../generated/schema";
 
 import { decimalize, DECIMAL_ZERO, BIGINT_ZERO } from "../utils/bignumbers";
@@ -70,6 +64,7 @@ function updateStabilityDepositByOperation(
   let stabilityDepositChange = createStabilityDepositChange(event);
 
   stabilityDepositChange.stabilityDeposit = stabilityDeposit.id;
+  stabilityDepositChange.blockNumber = event.block.number.toI32();
   stabilityDepositChange.stabilityDepositOperation = operation;
   stabilityDepositChange.depositedAmountBefore =
     stabilityDeposit.depositedAmount;

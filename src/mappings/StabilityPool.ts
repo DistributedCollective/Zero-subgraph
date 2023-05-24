@@ -3,22 +3,20 @@ import { BigInt } from "@graphprotocol/graph-ts";
 import {
   UserDepositChanged,
   ETHGainWithdrawn,
-  RBTCGainWithdrawn,
   DepositSnapshotUpdated,
   S_Updated,
   G_Updated,
   P_Updated,
   EpochUpdated
+  SOVPaidToDepositor,
 } from "../../generated/StabilityPool/StabilityPool";
 
 import { BIGINT_ZERO } from "../utils/bignumbers";
 
 import {
   updateStabilityDeposit,
-  withdrawCollateralGainFromStabilityDeposit
+  withdrawCollateralGainFromStabilityDeposit,
 } from "../entities/StabilityDeposit";
-
-import { TempDepositUpdate } from "../../generated/schema";
 import {
   updateEpoch,
   updateG,
@@ -26,6 +24,7 @@ import {
   updateS
 } from "../entities/StabilityDepositVariable";
 import { createAndReturnSnapshot } from "../entities/Snapshot";
+import { SOVDistribution, TempDepositUpdate } from "../../generated/schema";
 // Read the value of tmpDepositUpdate from the Global entity, and replace it with:
 //  - null, if it wasn't null
 //  - valueToSetIfNull if it was null
@@ -87,28 +86,15 @@ export function handleETHGainWithdrawn(event: ETHGainWithdrawn): void {
   }
 }
 
-export function handleRBTCGainWithdrawn(event: RBTCGainWithdrawn): void {
-  // Leave a non-null dummy value to signal to handleUserDepositChanged()
-  // that ETH gains have been withdrawn
-  let depositUpdate = swapTmpDepositUpdate(
-    BIGINT_ZERO,
-    event.transaction.hash.toHexString()
+export function handleSOVPaidToDepositor(event: SOVPaidToDepositor): void {
+  let SOVDistributionEntity = new SOVDistribution(
+    event.transaction.hash.toHexString() + "/" + event.logIndex.toString()
   );
 
-  withdrawCollateralGainFromStabilityDeposit(
-    event,
-    event.params._depositor,
-    event.params._RBTC,
-    event.params._ZUSDLoss
-  );
-
-  if (depositUpdate !== null) {
-    updateStabilityDeposit(
-      event,
-      event.params._depositor,
-      depositUpdate as BigInt
-    );
-  }
+  SOVDistributionEntity.amount = event.params._SOV;
+  SOVDistributionEntity.user = event.params._depositor;
+  SOVDistributionEntity.timestamp = event.block.timestamp.toI32();
+  SOVDistributionEntity.save();
 }
 
 export function handleDepositSnapshotUpdated(

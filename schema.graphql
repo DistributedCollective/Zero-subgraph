@@ -55,6 +55,14 @@ type TempDepositUpdate @entity {
   amount: BigInt
 }
 
+type SOVDistribution @entity {
+  "ID is transaction hash"
+  id: ID!
+  amount: BigInt
+  user: Bytes!
+  timestamp: Int!
+}
+
 type SystemState @entity {
   "Sequence number as an ID (string)"
   id: ID!
@@ -354,13 +362,13 @@ type RevenueDaily @entity {
   borrowFeeRBTC: BigDecimal!
   redemptionFeeRBTC: BigDecimal!
   """
-  Stability Pool profit is the sum of profits accrued to the SP in the given time period; 
-  each profit event is calculated at the time of each liquidation transaction as: 
+  Stability Pool profit is the sum of profits accrued to the SP in the given time period;
+  each profit event is calculated at the time of each liquidation transaction as:
   amount of RBTC collateral sent to the SP at the time of the liquidation - (amount of ZUSD taken from the SP to service the liquidation / USD price of RBTC at the time of the liquidation)
   """
   stabilityPoolProfit: BigDecimal!
   """
-  Liquidation volume is the total amount of RBTC collateral liquidated in the given time period. 
+  Liquidation volume is the total amount of RBTC collateral liquidated in the given time period.
   """
   liquidationVolume: BigDecimal!
   """
@@ -377,13 +385,13 @@ type RevenueWeekly @entity {
   borrowFeeRBTC: BigDecimal!
   redemptionFeeRBTC: BigDecimal!
   """
-  Stability Pool profit is the sum of profits accrued to the SP in the given time period; 
-  each profit event is calculated at the time of each liquidation transaction as: 
+  Stability Pool profit is the sum of profits accrued to the SP in the given time period;
+  each profit event is calculated at the time of each liquidation transaction as:
   (USD price of RBTC at the time of the liquidation / amount of RBTC collateral sent to the SP at the time of the liquidation) - (amount of ZUSD taken from the SP to service the liquidation / USD price of RBTC at the time of the liquidation)
   """
   stabilityPoolProfit: BigDecimal!
   """
-  Liquidation volume is the total amount of RBTC collateral liquidated in the given time period. 
+  Liquidation volume is the total amount of RBTC collateral liquidated in the given time period.
   """
   liquidationVolume: BigDecimal!
   """

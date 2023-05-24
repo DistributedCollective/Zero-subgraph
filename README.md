@@ -33,3 +33,4 @@ To run locally:
 
 - The subgraph mappings files are written in AssemblyScript, not Typescript. AssemblyScript docs can be found here: https://www.assemblyscript.org/. Pay particular attention to the difference in the equality operator - `===` compares referencess, `==` compares values.
 - If you are having issues with postgres, try deleting the `data/` directory from the subgraph root
+- This subgraph takes approximately 4 hours to fully sync on mainnet
