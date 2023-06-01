@@ -7,4 +7,3 @@ metadata:
   name: {{ include "graphql-read.fullname" . }}-envs
 data:
 {{ toYaml .Values.envs | indent 2 }}
-{{ toYaml .Values.extraEnv | indent 2 }}

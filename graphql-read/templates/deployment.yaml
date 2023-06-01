@@ -36,8 +36,6 @@ spec:
           envFrom:
             - configMapRef:
                 name: {{ include "graphql-read.fullname" . }}-envs
-            - secretRef:
-                name: graphql-secrets
           ports:
             - name: http
               containerPort: {{ .Values.service.http.port }}
@@ -45,14 +43,14 @@ spec:
             - name: ws
               containerPort: {{ .Values.service.ws.port }}
               protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /
-              port: http
-          readinessProbe:
-            httpGet:
-              path: /
-              port: http
+                # livenessProbe:
+                #   httpGet:
+                #     path: /
+                #     port: http
+                # readinessProbe:
+                #   httpGet:
+                #     path: /
+                #     port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

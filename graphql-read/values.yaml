@@ -36,36 +36,33 @@ securityContext: {}
   # runAsNonRoot: true
   # runAsUser: 1000
 
-extraEnvs:
-  #postgres_host: postgres
-  #ipfs: 'ipfs:5001'
-  #ethereum: '{{node.network}}:{{& node.address}}'
-
 envs:
-  postgres_user: postgres
-  postgres_db: postgres
+  postgres_user: 'postgres'
+  postgres_db: 'postgres'
   GRAPH_GRAPHQL_QUERY_TIMEOUT: '10'
   GRAPH_SQL_STATEMENT_TIMEOUT: '10'
   GRAPH_GRAPHQL_MAX_DEPTH: '16'
   GRAPH_GRAPHQL_MAX_COMPLEXITY: '1500000'
-  DISABLE_BLOCK_INGESTOR: true
+  DISABLE_BLOCK_INGESTOR: "true"
   GRAPH_LOG: 'DEBUG'
 
 service:
-  type: ClusterIP
+  type: NodePort
   http:
     port: 8000
   ws:
     port: 8030
 
 ingress:
-  enabled: false
+  enabled: true
   className: ""
-  annotations: {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: instance
+    alb.ingress.kubernetes.io/group.name: subgraph.zero
+    kubernetes.io/ingress.class: alb
   hosts:
-    - host: chart-example.local
+    - host: zero-subgraph-gofman-read.sovryn.app
       paths:
         - path: /
           pathType: ImplementationSpecific
