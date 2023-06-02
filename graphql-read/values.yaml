@@ -46,6 +46,7 @@ envs:
   DISABLE_BLOCK_INGESTOR: "true"
   GRAPH_LOG: 'DEBUG'
   node_role: 'query-node'
+  node_id: 'query-node'
 
 service:
   type: NodePort
