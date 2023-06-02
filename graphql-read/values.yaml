@@ -64,9 +64,9 @@ ingress:
     alb.ingress.kubernetes.io/group.name: subgraph.zero
     kubernetes.io/ingress.class: alb
   hosts:
-    - host: zero-subgraph-gofman-read.sovryn.app
+    - host: zero-subgraph-read.sovryn.app
       paths:
-        - path: /
+        - path: /*
           pathType: ImplementationSpecific
   tls: []
   #  - secretName: chart-example-tls
