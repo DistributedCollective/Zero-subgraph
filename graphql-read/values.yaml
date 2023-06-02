@@ -45,6 +45,7 @@ envs:
   GRAPH_GRAPHQL_MAX_COMPLEXITY: '1500000'
   DISABLE_BLOCK_INGESTOR: "true"
   GRAPH_LOG: 'DEBUG'
+  node_role: 'query-node'
 
 service:
   type: NodePort
