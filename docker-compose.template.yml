@@ -1,21 +1,12 @@
 version: '3'
 services:
-  graph-node:
+  graph-node-write:
     image: graphprotocol/graph-node:v0.27.0
-    ports:
-      - '8000:8000'
-      - '8001:8001'
-      - '8020:8020'
-      - '8030:8030'
-      - '8040:8040'
-    expose:
-      - 8000
-      - 8001
-      - 8020
-      - 8030
     depends_on:
       - ipfs
       - postgres
+    ports:
+      - '8020:8020'
     environment:
       postgres_host: postgres
       postgres_user: postgres
