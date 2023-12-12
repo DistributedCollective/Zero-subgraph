@@ -169,9 +169,11 @@ export function updateSystemStateByTroveChange(troveChange: TroveChange): void {
       collateralGasCompensation
     );
 
+    let troveChangeCollateralRatioBeforeValue: BigDecimal = troveChange.collateralRatioBefore as BigDecimal;
+
     if (
       !isRecoveryModeLiquidation(operation) ||
-      troveChange.collateralRatioBefore > DECIMAL_ONE
+      troveChangeCollateralRatioBeforeValue.gt(DECIMAL_ONE)
     ) {
       tryToOffsetWithTokensFromStabilityPool(
         systemState,
